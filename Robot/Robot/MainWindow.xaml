@@ -74,10 +74,6 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                 </Grid.RowDefinitions>
-                <!-- 
-                     10 sor
-                     10 oszlop
-                -->
 
             </Grid>
             <TreeView x:Name="treeView" 
@@ -88,9 +84,6 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Stretch"/>
 
-            <Image x:Name="image"
-                   Height="40"  Width="40"
-                   Canvas.Left="268" Canvas.Top="420" Source="Resources/Robot/right.png"/>
         </Canvas>
 
         <StatusBar

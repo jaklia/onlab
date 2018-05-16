@@ -37,7 +37,11 @@ namespace Robot.Model
         {
             start = Fields[0][0];
             dest = Fields[Height - 1][Width - 1];
-            Fields[1][1].PutItem(new Item(0, "key"));
+            Fields[1][1].item = new Item(0, "key");
+            Fields[5][5] = new Wall(5, 5);
+            Fields[5][6] = new Wall(5, 6);
+            Fields[6][5] = new Wall(6, 5);
+            Fields[6][6] = new Wall(6, 6);
         }
     }
 }

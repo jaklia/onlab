@@ -141,7 +141,7 @@ namespace Robot.Model
 
         public void PickUp()
         {
-            Items.Add(Pos.GetItem());
+            Items.Add(Pos.PickUpItem());
         }
 
         public void Drop(int itemId)

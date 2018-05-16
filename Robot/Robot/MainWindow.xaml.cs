@@ -27,7 +27,6 @@ namespace Robot
         RobotGrammarParser.ProgramContext ctx;   /* ezeket külön osztályba (viewmodel????) !!!!! */
         Game game;
         Image RobotImg = new Image();
-        Image ItemImg = new Image();
 
         public MainWindow()
         {
@@ -45,17 +44,9 @@ namespace Robot
         {
             game = new Game(10, 10);
             game.Board.Init1();
-            //RobotImg = new Image();
-            //RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
-            GameBoardGrid.Children.Add(ItemImg);
-            GameBoardGrid.Children.Add(RobotImg);
             RobotImg.Height = 40;
             RobotImg.Width = 40;
-            ItemImg.Height = 40;
-            ItemImg.Width = 40;
 
-            //Grid.SetColumn(RobotImg, 0);
-            //Grid.SetRow(RobotImg, 0);
             DrawGame(game);
             StartButton.IsEnabled = false;
         }
@@ -91,27 +82,33 @@ namespace Robot
 
         void DrawGame(Game game)
         {
+            GameBoardGrid.Children.Clear();
+            Image[,] imgs = new Image[game.Board.Height,game.Board.Width];
             // draw the board
             for (int i=0; i<game.Board.Height; i++)
             {
                 for (int j=0; j<game.Board.Width; j++)
                 {
+                    imgs[i,j] = new Image();
+                    imgs[i, j].Height = 40;
+                    imgs[i, j].Width = 40;
+                    GameBoardGrid.Children.Add(imgs[i, j]);
                     if (game.Board.GetField(i,j).HasItem())
                     {
-                        Item item = game.Board.GetField(i, j).GetItem();
-                        // item.id / name !!!
-                        //Image ItemImg = new Image();
-                        //ItemImg.Height = 40;
-                        //ItemImg.Width = 40;
-                        Grid.SetColumn(ItemImg, j);
-                        Grid.SetRow(ItemImg, i);
-                        //ItemImg.Stretch = Stretch.Fill;
-                       ItemImg.Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
+                        Item item = game.Board.GetField(i, j).item;
+                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
+                    }else
+                    {
+                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/emptyfield.png", UriKind.Relative));
                     }
+                    Grid.SetColumn(imgs[i, j], j);
+                    Grid.SetRow(imgs[i, j], i);
+                    
                 }
             }
-            
+
             // draw the player
+            GameBoardGrid.Children.Add(RobotImg);
             Grid.SetColumn(RobotImg, game.Player.Column);
             Grid.SetRow(RobotImg, game.Player.Row);
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */

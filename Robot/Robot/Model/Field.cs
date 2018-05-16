@@ -10,8 +10,10 @@ namespace Robot.Model
     {
         public int Column { get; private set; }
         public int Row { get; }
-        Item item;
+        //Item item;
         bool itemPickedUp;
+
+        public Item item { get; set; }
 
         public Field (int col, int row, Item item = null)
         {
@@ -21,15 +23,21 @@ namespace Robot.Model
             itemPickedUp = false;
         }
 
-        public Item GetItem()
+        //public Item GetItem()
+        //{
+        //    return item;
+        //}
+
+        //public void SetItem(Item item)
+        //{
+        //    this.item = item;
+        //}
+
+        public Item PickUpItem ()
         {
-            if(!itemPickedUp && item != null)
-            {
-                return item;
-            } else
-            {
-                return null;
-            }
+            Item tmp = item;
+            item = null;
+            return tmp;
         }
 
         public bool PutItem(Item item)
