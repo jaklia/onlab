@@ -27,7 +27,11 @@ namespace Robot.Model
         {
             Column = other.Column;
             Row = other.Row;
-            item = new Item(other.item);
+            if (other.item != null)
+            {
+                item = new Item(other.item);
+            }
+            
         }
 
         //public Item GetItem()

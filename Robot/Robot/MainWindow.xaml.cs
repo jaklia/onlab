@@ -27,6 +27,7 @@ namespace Robot
         RobotGrammarParser.ProgramContext ctx;   /* ezeket külön osztályba (viewmodel????) !!!!! */
         Game game;
         Image RobotImg = new Image();
+        Game startingState;
 
         public MainWindow()
         {
@@ -44,6 +45,7 @@ namespace Robot
         {
             game = new Game(10, 10);
             game.Board.Init1();
+            startingState = game.Clone();
             RobotImg.Height = 40;
             RobotImg.Width = 40;
 

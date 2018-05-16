@@ -38,7 +38,10 @@ namespace Robot.Model
                 Fields[i] = new Field[Width];
                 for (int j = 0; j < Width; j++)
                 {
-                    Fields[i][j] = new Field(other.Fields[i][j]);
+                    if (other.Fields[i][j] != null)
+                    {
+                        Fields[i][j] = new Field(other.Fields[i][j]);
+                    }
                 }
             }
         }
