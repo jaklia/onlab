@@ -33,6 +33,14 @@ namespace Robot.Model
             Items = new List<Item>();
         }
 
+        public Robot (Board board, Robot other)
+        {
+            Board = board;
+            Dir = other.Dir;
+            Pos = new Field(other.Pos);
+            Items = new List<Item>(other.Items);
+        }
+
         public void Move(int amount)
         {
             /*

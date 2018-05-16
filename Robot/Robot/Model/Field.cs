@@ -11,7 +11,7 @@ namespace Robot.Model
         public int Column { get; private set; }
         public int Row { get; }
         //Item item;
-        bool itemPickedUp;
+        //bool itemPickedUp;
 
         public Item item { get; set; }
 
@@ -20,7 +20,14 @@ namespace Robot.Model
             Column = col;
             Row = row;
             this.item = item;
-            itemPickedUp = false;
+           // itemPickedUp = false;
+        }
+
+        public Field (Field other)
+        {
+            Column = other.Column;
+            Row = other.Row;
+            item = new Item(other.item);
         }
 
         //public Item GetItem()

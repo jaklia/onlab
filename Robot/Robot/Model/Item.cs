@@ -16,5 +16,11 @@ namespace Robot.Model
             this.id = id;
             this.name = name;
         }
+
+        public Item(Item other)
+        {
+            id = other.id;
+            name = new string(other.name.ToCharArray());
+        }
     }
 }

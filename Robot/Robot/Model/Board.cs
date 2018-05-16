@@ -28,6 +28,21 @@ namespace Robot.Model
             }
         }
 
+        public Board (Board other)
+        {
+            Width = other.Width;
+            Height = other.Height;
+            Fields = new Field[Height][];
+            for (int i = 0; i < Height; i++)
+            {
+                Fields[i] = new Field[Width];
+                for (int j = 0; j < Width; j++)
+                {
+                    Fields[i][j] = new Field(other.Fields[i][j]);
+                }
+            }
+        }
+
         public Field GetField(int col, int row)
         {
             return Fields[row][col];

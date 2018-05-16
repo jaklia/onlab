@@ -18,6 +18,12 @@ namespace Robot.Model
             //Board.Init1();
         }
 
+        private Game (Game other)
+        {
+            Board = new Board(other.Board);
+            Player = new Robot(Board, other.Player);
+        }
+
         public void MoveRobot (int moveAmount)
         {
             Player.Move(moveAmount);
@@ -38,5 +44,10 @@ namespace Robot.Model
             Player.Drop(itemId);
         }
 
+        // get deep copy of the instance
+        public Game Clone()
+        {
+            return new Game(this);
+        }
     }
 }

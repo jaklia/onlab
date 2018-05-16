@@ -39,7 +39,7 @@ namespace Robot
             }
             InitGame();
         }
-        // reset game
+        // TODO :  reset game
         void InitGame()
         {
             game = new Game(10, 10);
