@@ -11,6 +11,7 @@ namespace Robot.Model
         public int Height { get; private set; }
         public int Width { get; private set; }
         Field[][] Fields;
+        Field start, dest;
 
         public Board(int width, int height)
         {
@@ -30,6 +31,13 @@ namespace Robot.Model
         public Field GetField(int col, int row)
         {
             return Fields[row][col];
+        }
+
+        public void Init1()
+        {
+            start = Fields[0][0];
+            dest = Fields[Height - 1][Width - 1];
+            Fields[1][1].PutItem(new Item(0, "key"));
         }
     }
 }

@@ -10,5 +10,11 @@ namespace Robot.Model
     {
         int id;
         string name;
+
+        public Item(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
+        }
     }
 }

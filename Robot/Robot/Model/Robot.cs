@@ -30,6 +30,7 @@ namespace Robot.Model
             Board = board;
             Dir = moveDir;
             Pos = Board.GetField(0, 0);
+            Items = new List<Item>();
         }
 
         public void Move(int amount)
@@ -88,37 +89,40 @@ namespace Robot.Model
             //Grid.SetColumn(btn, x);
             //Grid.SetRow(btn, y);
         }
-        private void  MoveLeft()
+        private void MoveLeft()
         {
             if (Column > 0)
             {
+                System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column - 1);
             }
-            System.Threading.Thread.Sleep(1000);
         }
         private void MoveRight()
         {
             if (Column < Board.Width - 1)
             {
+                System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column + 1);
             }
-            System.Threading.Thread.Sleep(1000);
+           // MessageBox.Show("");
         }
         private void MoveUp()
         {
             if (Row > 0)
             {
+                System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row - 1, Column);
             }
-            System.Threading.Thread.Sleep(500);
+            
         }
         private void MoveDown()
         {
             if (Row < Board.Height - 1)
             {
+                System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row + 1, Column);
             }
-            System.Threading.Thread.Sleep(500);
+            
         }
 
         public void Turn(TurnDir turnDir)
@@ -137,12 +141,15 @@ namespace Robot.Model
 
         public void PickUp()
         {
-            System.Threading.Thread.Sleep(500);
+            Items.Add(Pos.GetItem());
         }
 
         public void Drop(int itemId)
         {
-            System.Threading.Thread.Sleep(500);
+           if( Pos.PutItem(Items[itemId]))
+            {
+                Items.RemoveAt(itemId);
+            }
         }
        
     }

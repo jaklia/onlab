@@ -26,7 +26,8 @@ namespace Robot
     {
         RobotGrammarParser.ProgramContext ctx;   /* ezeket külön osztályba (viewmodel????) !!!!! */
         Game game;
-        Image RobotImg;
+        Image RobotImg = new Image();
+        Image ItemImg = new Image();
 
         public MainWindow()
         {
@@ -37,6 +38,26 @@ namespace Robot
                 GameBoardGrid.RowDefinitions.Add(new RowDefinition());
                 GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
             }
+            InitGame();
+        }
+        // reset game
+        void InitGame()
+        {
+            game = new Game(10, 10);
+            game.Board.Init1();
+            //RobotImg = new Image();
+            //RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
+            GameBoardGrid.Children.Add(ItemImg);
+            GameBoardGrid.Children.Add(RobotImg);
+            RobotImg.Height = 40;
+            RobotImg.Width = 40;
+            ItemImg.Height = 40;
+            ItemImg.Width = 40;
+
+            //Grid.SetColumn(RobotImg, 0);
+            //Grid.SetRow(RobotImg, 0);
+            DrawGame(game);
+            StartButton.IsEnabled = false;
         }
 
         private void ParseButton_Click(object sender, RoutedEventArgs e)
@@ -48,16 +69,7 @@ namespace Robot
             var parser = new RobotGrammarParser(tokenStream);
             parser.BuildParseTree = true;
             ctx = parser.program();
-
-
-            RobotImg = new Image();
-            RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
-            GameBoardGrid.Children.Add(RobotImg);
-            RobotImg.Height = 40;
-            RobotImg.Width = 40;
-            Grid.SetColumn(RobotImg, 0);
-            Grid.SetRow(RobotImg, 0);
-
+            
 
             // TreeView 
             treeView.Items.Clear();
@@ -66,16 +78,60 @@ namespace Robot
             var tree = treeViewGeneratorVisitor.VisitProgram(ctx);
             tree.ExpandSubtree();
             treeView.Items.Add(tree);
+
+            StartButton.IsEnabled = true;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            
-
-            game = new Game(10, 10);
-
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(RobotImg, game);
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game);
             robotControllerVisitor.VisitProgram(ctx);
+            DrawGame(game);
+        }
+
+        void DrawGame(Game game)
+        {
+            // draw the board
+            for (int i=0; i<game.Board.Height; i++)
+            {
+                for (int j=0; j<game.Board.Width; j++)
+                {
+                    if (game.Board.GetField(i,j).HasItem())
+                    {
+                        Item item = game.Board.GetField(i, j).GetItem();
+                        // item.id / name !!!
+                        //Image ItemImg = new Image();
+                        //ItemImg.Height = 40;
+                        //ItemImg.Width = 40;
+                        Grid.SetColumn(ItemImg, j);
+                        Grid.SetRow(ItemImg, i);
+                        //ItemImg.Stretch = Stretch.Fill;
+                       ItemImg.Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
+                    }
+                }
+            }
+            
+            // draw the player
+            Grid.SetColumn(RobotImg, game.Player.Column);
+            Grid.SetRow(RobotImg, game.Player.Row);
+            switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */
+            {
+                case Model.Robot.MoveDir.UP:
+                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
+                    break;
+                case Model.Robot.MoveDir.RIGHT:
+                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
+                    break;
+                case Model.Robot.MoveDir.DOWN:
+                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
+                    break;
+                case Model.Robot.MoveDir.LEFT:
+                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
+                    break;
+                default:
+                    break;
+            }
+            
         }
 
     }

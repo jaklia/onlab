@@ -14,12 +14,12 @@ namespace Robot.Visitors
 {
     class RobotControllerVisitor : RobotGrammarBaseVisitor<object>
     {
-        Image img;
+        //Image img;
         Game Game;
 
-        public RobotControllerVisitor(Image img, Game game)
+        public RobotControllerVisitor(/*Image img,*/ Game game)
         {
-            this.img = img;
+            //this.img = img;
             Game = game;
         }
 
@@ -88,8 +88,8 @@ namespace Robot.Visitors
         {
             int amount = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
             Game.MoveRobot(amount);
-            Grid.SetColumn(img, Game.Player.Column);
-            Grid.SetRow(img, Game.Player.Row);
+            //Grid.SetColumn(img, Game.Player.Column);
+            //Grid.SetRow(img, Game.Player.Row);
             return 0;
         }
 
@@ -103,23 +103,23 @@ namespace Robot.Visitors
         {
             Model.Robot.TurnDir dir = (Model.Robot.TurnDir)VisitDir(context.dir());
             Game.TurnRobot(dir);
-            switch (Game.Player.Dir)  /* ezt is külön (viewmodel?????) */
-            {
-                case Model.Robot.MoveDir.UP:
-                    img.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
-                    break;
-                case Model.Robot.MoveDir.RIGHT:
-                    img.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
-                    break;
-                case Model.Robot.MoveDir.DOWN:
-                    img.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
-                    break;
-                case Model.Robot.MoveDir.LEFT:
-                    img.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
-                    break;
-                default:
-                    break;
-            }
+            //switch (Game.Player.Dir)  /* ezt is külön (viewmodel?????) */
+            //{
+            //    case Model.Robot.MoveDir.UP:
+            //        img.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
+            //        break;
+            //    case Model.Robot.MoveDir.RIGHT:
+            //        img.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
+            //        break;
+            //    case Model.Robot.MoveDir.DOWN:
+            //        img.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
+            //        break;
+            //    case Model.Robot.MoveDir.LEFT:
+            //        img.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
+            //        break;
+            //    default:
+            //        break;
+            //}
             return 0;
         }
 

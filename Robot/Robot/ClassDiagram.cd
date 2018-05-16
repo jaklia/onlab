@@ -3,7 +3,7 @@
   <Class Name="Robot.Model.Board">
     <Position X="0.5" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAhAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <HashCode>AAAAAAAAhAAAAAAkAAAAAEAAAAAACAAAAAAAAAAAgAA=</HashCode>
       <FileName>Model\Board.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -11,7 +11,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Robot.Model.EmptyField">
-    <Position X="5" Y="6" Width="1.5" />
+    <Position X="5.75" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\EmptyField.cs</FileName>
@@ -20,7 +20,7 @@
   <Class Name="Robot.Model.Field">
     <Position X="3.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAABAAAAEAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAACgAAAACAAEAAAgRAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
       <FileName>Model\Field.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -31,8 +31,8 @@
       <FileName>Model\Game.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="Board" />
       <Field Name="Player" />
+      <Field Name="Board" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Robot.Model.Item">
@@ -61,6 +61,8 @@
         <Point X="7" Y="3" />
         <Point X="2.375" Y="3" />
         <Point X="2.375" Y="4.312" />
+        <Point X="2.243" Y="4.312" Type="JumpStart" />
+        <Point X="2.077" Y="4.312" Type="JumpEnd" />
         <Point X="2" Y="4.312" />
       </Path>
     </AssociationLine>

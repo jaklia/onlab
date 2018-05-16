@@ -10,12 +10,42 @@ namespace Robot.Model
     {
         public int Column { get; private set; }
         public int Row { get; }
-        public Item Item { get; private set; }
+        Item item;
+        bool itemPickedUp;
 
-        public Field (int col, int row)
+        public Field (int col, int row, Item item = null)
         {
             Column = col;
             Row = row;
+            this.item = item;
+            itemPickedUp = false;
+        }
+
+        public Item GetItem()
+        {
+            if(!itemPickedUp && item != null)
+            {
+                return item;
+            } else
+            {
+                return null;
+            }
+        }
+
+        public bool PutItem(Item item)
+        {
+            if(this.item == null)
+            {
+                this.item = item;
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+        public bool HasItem()
+        {
+            return item != null;
         }
 
         public virtual bool AcceptsRobot()

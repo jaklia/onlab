@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Robot.Model
 {
-    public class Game
+    public class Game  // deep copy
     {
         public Robot Player;
-        Board Board;
+        public Board Board;
 
         public Game (int boardWith, int boardHeight)
         {
             Board = new Board(boardWith, boardHeight);
             Player = new Robot(Board, Robot.MoveDir.RIGHT);
+            //Board.Init1();
         }
 
         public void MoveRobot (int moveAmount)
