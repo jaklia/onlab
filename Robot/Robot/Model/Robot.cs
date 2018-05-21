@@ -52,82 +52,80 @@ namespace Robot.Model
             switch (Dir)
             {
                 case MoveDir.UP:
-                    if (Row - amount >= 0)
-                    {
+                    //if (Row - amount >= 0)
+                    //{
                         while (amount > 0)
                         {
                             MoveUp();
                             amount--;
                         }
-                    }
+                   // }
                     break;
                 case MoveDir.RIGHT:
-                    if (Column + amount < 10)
+                    //if (Column + amount < Board.Width)
+                    //{
+                    while (amount > 0)
                     {
-                        while (amount > 0)
-                        {
-                            MoveRight();
-                            amount--;
-                        }
+                        MoveRight();
+                        amount--;
                     }
+                    //}
                     break;
                 case MoveDir.DOWN:
-                    if (Row + amount < 10)
-                    {
+                   // if (Row + amount < Board.Height)
+                   // {
                         while (amount > 0)
                         {
                             MoveDown();
                             amount--;
                         }
-                    }
+                   // }
                     break;
                 case MoveDir.LEFT:
-                    if (Column - amount >= 0)
-                    {
+                   // if (Column - amount >= 0)
+                  //  {
                         while (amount > 0)
                         {
                             MoveLeft();
                             amount--;
                         }
-                    }
+                  //  }
                     break;
                 default:
                     break;
             }
-            //Grid.SetColumn(btn, x);
-            //Grid.SetRow(btn, y);
         }
         private void MoveLeft()
         {
-            if (Column > 0)
+            if (Column > 0 && Board.GetField(Row, Column - 1).AcceptsRobot())
             {
-                System.Threading.Thread.Sleep(500);
+                //System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column - 1);
             }
         }
         private void MoveRight()
         {
-            if (Column < Board.Width - 1)
+            if (Column < Board.Width - 1 && Board.GetField(Row, Column + 1).AcceptsRobot())
             {
-                System.Threading.Thread.Sleep(500);
+               // System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column + 1);
             }
            // MessageBox.Show("");
         }
         private void MoveUp()
         {
-            if (Row > 0)
+            if (Row > 0 && Board.GetField(Row - 1, Column).AcceptsRobot())
             {
-                System.Threading.Thread.Sleep(500);
+                //System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row - 1, Column);
             }
             
         }
         private void MoveDown()
         {
-            if (Row < Board.Height - 1)
+            if (Row < Board.Height - 1 && Board.GetField(Row + 1, Column).AcceptsRobot())
             {
-                System.Threading.Thread.Sleep(500);
+               // System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row + 1, Column);
             }
             
