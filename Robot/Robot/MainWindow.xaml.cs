@@ -40,17 +40,20 @@ namespace Robot
             }
             InitGame();
         }
-        // TODO :  reset game
+        // TODO :  reset game      ok
+        // példapálya              ok
+        // falak kirajzolása       ok
+        // (error)
+        // (material design)
+        // (treeview)
         void InitGame()
         {
             game = new Game(10, 10);
             game.Board.Init1();
-            startingState = game.Clone();
-            RobotImg.Height = 40;
-            RobotImg.Width = 40;
-
+            startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Clock-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
+            textBox.Text = "";
         }
 
         private void ParseButton_Click(object sender, RoutedEventArgs e)
@@ -63,7 +66,6 @@ namespace Robot
             parser.BuildParseTree = true;
             ctx = parser.program();
             
-
             // TreeView 
             treeView.Items.Clear();
             TreeViewGeneratorVisitor treeViewGeneratorVisitor = new TreeViewGeneratorVisitor();
@@ -80,6 +82,15 @@ namespace Robot
             RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game);
             robotControllerVisitor.VisitProgram(ctx);
             DrawGame(game);
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            game = startingState.Clone();
+            textBox.Text = "";
+            StartButton.IsEnabled = false;
+            DrawGame(game);
+            //InitGame();
         }
 
         void DrawGame(Game game)
@@ -99,9 +110,11 @@ namespace Robot
                     {
                         Item item = game.Board.GetField(i, j).item;
                         imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
-                    }else
-                    {
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/emptyfield.png", UriKind.Relative));
+                    } else if (game.Board.GetField(i,j).GetType() == new Wall(0,0).GetType()) {
+                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
+                    }
+                    else {
+                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
                     }
                     Grid.SetColumn(imgs[i, j], j);
                     Grid.SetRow(imgs[i, j], i);
@@ -111,6 +124,8 @@ namespace Robot
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
+            RobotImg.Height = 40;
+            RobotImg.Width = 40;
             Grid.SetColumn(RobotImg, game.Player.Column);
             Grid.SetRow(RobotImg, game.Player.Row);
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */

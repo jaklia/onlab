@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Robot"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="Robot" 
         Height="580" Width="980"
         MinHeight="580" MinWidth="980">
     <Grid
@@ -25,15 +25,21 @@
                 VerticalAlignment="Center"
                 Height="20" Width="Auto"
                 VerticalContentAlignment="Center"
-                Header="MenuItem1"
+                Header="File"
                 Margin="0,5,0,5">
+                <MenuItem
+                    Header="Save program"
+                    IsEnabled="False">
+                    
+                </MenuItem>
             </MenuItem>
             <MenuItem
                 VerticalAlignment="Center"
                 Height="20" Width="Auto"
                 VerticalContentAlignment="Center"
-                Header="MenuItem2"
+                Header="Help"
                 Margin="0,5,0,5">
+                
             </MenuItem>
         </Menu>
 
@@ -64,6 +70,14 @@
                 Margin="0,0,0,0" 
                 Width="75"
                 Click="StartButton_Click"/>
+            <Button x:Name="ResetButton"
+                Content="Reset"
+                Canvas.Left="190"
+                Canvas.Top="420"
+                HorizontalAlignment="Center"  VerticalAlignment="Center"
+                Margin="0,0,0,0" 
+                Width="75"
+                Click="ResetButton_Click"/>
             <Grid x:Name="GameBoardGrid"
                 Canvas.Top="10"
                 Canvas.Left="330"

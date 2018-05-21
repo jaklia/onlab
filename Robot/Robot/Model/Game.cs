@@ -18,7 +18,7 @@ namespace Robot.Model
             //Board.Init1();
         }
 
-        private Game (Game other)
+        public Game (Game other)
         {
             Board = new Board(other.Board);
             Player = new Robot(Board, other.Player);
@@ -47,6 +47,8 @@ namespace Robot.Model
         // get deep copy of the instance
         public Game Clone()
         {
+            //Game gm = new Game(0, 0);
+            //gm.Board = 
             return new Game(this);
         }
     }
