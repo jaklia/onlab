@@ -10,8 +10,6 @@ namespace Robot.Model
     {
         public int Column { get; private set; }
         public int Row { get; }
-        //Item item;
-        //bool itemPickedUp;
 
         public Item item { get; set; }
 
@@ -20,7 +18,6 @@ namespace Robot.Model
             Column = col;
             Row = row;
             this.item = item;
-           // itemPickedUp = false;
         }
 
         public Field (Field other)
@@ -31,18 +28,7 @@ namespace Robot.Model
             {
                 item = new Item(other.item);
             }
-            
         }
-
-        //public Item GetItem()
-        //{
-        //    return item;
-        //}
-
-        //public void SetItem(Item item)
-        //{
-        //    this.item = item;
-        //}
 
         public Item PickUpItem ()
         {
@@ -70,6 +56,13 @@ namespace Robot.Model
         public virtual bool AcceptsRobot()
         {
             return true;
+        }
+
+        public virtual Field Clone()
+        {
+            Item newItem = item == null ? null : new Item(item);
+            Field f = new Field(Column, Row, newItem);
+            return f;
         }
     }
 }

@@ -16,5 +16,11 @@ namespace Robot.Model
         {
             return false;
         }
+
+        public override Field Clone()
+        {
+            Wall w = new Wall(Column, Row);
+            return w;
+        }
     }
 }
