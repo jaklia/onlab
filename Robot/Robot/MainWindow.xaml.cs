@@ -49,7 +49,7 @@ namespace Robot
         void InitGame()
         {
             game = new Game(10, 10);
-            game.Board.Init1();
+            game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Clock-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
@@ -86,6 +86,7 @@ namespace Robot
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            treeView.Items.Clear();
             game = startingState.Clone();
             textBox.Text = "";
             StartButton.IsEnabled = false;

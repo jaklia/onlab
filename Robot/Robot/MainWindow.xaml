@@ -37,7 +37,7 @@
                 VerticalAlignment="Center"
                 Height="20" Width="Auto"
                 VerticalContentAlignment="Center"
-                Header="Help"
+                Header=""
                 Margin="0,5,0,5">
                 
             </MenuItem>
@@ -53,6 +53,7 @@
                 Canvas.Left="10"
                 Height="400"  Width="300" 
                 Margin="0,0,0,0" 
+                FontSize="15"
                 TextWrapping="Wrap" AcceptsReturn="True" FontFamily="Consolas"/>
             <Button x:Name="ParseButton" 
                 Content="Parse" 
@@ -61,6 +62,7 @@
                 HorizontalAlignment="Left"  VerticalAlignment="Top"
                 Margin="0,0,0,0" 
                 Width="75" 
+                
                 Click="ParseButton_Click"/>
             <Button x:Name="StartButton"
                 Content="Start"
@@ -69,6 +71,7 @@
                 HorizontalAlignment="Center"  VerticalAlignment="Center"
                 Margin="0,0,0,0" 
                 Width="75"
+                
                 Click="StartButton_Click"/>
             <Button x:Name="ResetButton"
                 Content="Reset"
@@ -77,6 +80,7 @@
                 HorizontalAlignment="Center"  VerticalAlignment="Center"
                 Margin="0,0,0,0" 
                 Width="75"
+               
                 Click="ResetButton_Click"/>
             <Grid x:Name="GameBoardGrid"
                 Canvas.Top="10"
@@ -93,6 +97,8 @@
             <TreeView x:Name="treeView" 
                 Canvas.Right="10" Canvas.Top="10" Canvas.Bottom="10"
                 Margin="0,0,0,0" 
+                
+                FontFamily="Consolas"
                 Width="200" 
                 Height="407"
                 HorizontalAlignment="Right"
