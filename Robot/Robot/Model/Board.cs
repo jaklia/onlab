@@ -13,6 +13,8 @@ namespace Robot.Model
         Field[][] Fields;
         Field start, dest;
 
+        //  TODO : ide kell egy GetDestField fv és majd az alapján kell a célmezőt kirajzolni
+
         public Board(int width, int height)
         {
             this.Width = width;

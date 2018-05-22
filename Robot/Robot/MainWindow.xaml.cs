@@ -40,9 +40,7 @@ namespace Robot
             }
             InitGame();
         }
-        // TODO :  reset game      ok
-        // példapálya              ok
-        // falak kirajzolása       ok
+        // TODO :
         // (error)
         // (material design)
         // (treeview)
@@ -50,7 +48,7 @@ namespace Robot
         {
             game = new Game(10, 10);
             game.Board.Init2();
-            startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Clock-ből meg lehet hívni az InitGame()-t
+            startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
             textBox.Text = "";
@@ -63,7 +61,7 @@ namespace Robot
             var lexer = new RobotGrammarLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new RobotGrammarParser(tokenStream);
-            parser.BuildParseTree = true;
+            //parser.BuildParseTree = true;
             ctx = parser.program();
             
             // TreeView 
@@ -122,6 +120,8 @@ namespace Robot
                     
                 }
             }
+            // ehelyett a Board-ban GetDestField kell majd !!!
+            imgs[game.Board.Height - 1, game.Board.Width - 1].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
