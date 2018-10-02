@@ -11,7 +11,7 @@ namespace Robot.Model
     public class Robot
     {
         public enum MoveDir { UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3 };
-        public enum TurnDir { LEFT = -1, RIGHT = 1 };
+        public enum TurnDir { LEFT = -1, RIGHT = 1, BACK = 2 };
         List<Item> Items;
         
         public MoveDir Dir { get; private set; }
@@ -40,97 +40,91 @@ namespace Robot.Model
             Pos = new Field(other.Pos);
             Items = new List<Item>(other.Items);
         }
+      
 
-        public void Move(int amount)
+        /** return int instead of void (number of steps the robot could make)
+        *     nem biztos h a robot meg tudja tenni az adott számú lépéseket
+        *     tudni kell h mennyi lepest tudott megtenni, a parancsok visszavonasakor igy tudni
+        *     fogjuk h hova kell visszaleptetni 
+        */
+        public int Move(int amount)
         {
-            /*
-             * x, y legyen property, és a getter/setter ellenőrizze a dolgokat 
-             *  itt csak a  +=amount legyen      ??????
-             *  
-             *  x, y helyett  row/column
-             */
+            int total = amount;
             switch (Dir)
             {
                 case MoveDir.UP:
-                    //if (Row - amount >= 0)
-                    //{
-                        while (amount > 0)
+                        while (amount > 0 && MoveUp())
                         {
-                            MoveUp();
+                           // MoveUp();
                             amount--;
                         }
-                   // }
                     break;
                 case MoveDir.RIGHT:
-                    //if (Column + amount < Board.Width)
-                    //{
-                    while (amount > 0)
+                    while (amount > 0 && MoveRight())
                     {
-                        MoveRight();
+                       // MoveRight();
                         amount--;
                     }
-                    //}
                     break;
                 case MoveDir.DOWN:
-                   // if (Row + amount < Board.Height)
-                   // {
-                        while (amount > 0)
+                        while (amount > 0 && MoveDown())
                         {
-                            MoveDown();
+                           // MoveDown();
                             amount--;
                         }
-                   // }
                     break;
                 case MoveDir.LEFT:
-                   // if (Column - amount >= 0)
-                  //  {
-                        while (amount > 0)
+                        while (amount > 0 && MoveLeft())
                         {
-                            MoveLeft();
+                           // MoveLeft();
                             amount--;
                         }
-                  //  }
                     break;
                 default:
                     break;
             }
+            return total - amount;
         }
-        private void MoveLeft()
+        // return bool from the MoveXXX functions
+        // to detect if the robot could step in that direction
+        private bool MoveLeft()
         {
             if (Column > 0 && Board.GetField(Row, Column - 1).AcceptsRobot())
             {
-                //System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column - 1);
+                return true;
             }
+            return false;
         }
-        private void MoveRight()
+        private bool MoveRight()
         {
             if (Column < Board.Width - 1 && Board.GetField(Row, Column + 1).AcceptsRobot())
             {
-               // System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row, Column + 1);
+                return true;
             }
-           // MessageBox.Show("");
+            return false;
         }
-        private void MoveUp()
+        private bool MoveUp()
         {
             if (Row > 0 && Board.GetField(Row - 1, Column).AcceptsRobot())
             {
-                //System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row - 1, Column);
+                return true;
             }
-            
+            return false;
         }
-        private void MoveDown()
+        private bool MoveDown()
         {
             if (Row < Board.Height - 1 && Board.GetField(Row + 1, Column).AcceptsRobot())
             {
-               // System.Threading.Thread.Sleep(500);
                 Pos = Board.GetField(Row + 1, Column);
+                return true;
             }
-            
+            return false;
         }
 
+        //  turn.back  -->  180 fokos fordulat
         public void Turn(TurnDir turnDir)
         {
             switch (turnDir)
@@ -141,13 +135,19 @@ namespace Robot.Model
                 case TurnDir.RIGHT:
                     Dir = (Dir == MoveDir.LEFT) ? Dir - 3 : Dir + 1;
                     break;
+                case TurnDir.BACK:
+                    Dir = (Dir == MoveDir.DOWN || Dir == MoveDir.LEFT) ? Dir - 2 : Dir + 2;
+                    break;
             }
-            //System.Threading.Thread.Sleep(500);
         }
 
-        public void PickUp()
+        // return the id of the item, so we can save it in the pick up cmd
+        //  when we want to undo the pick up cmd we
+        // (undo)
+        public int PickUp()
         {
             Items.Add(Pos.PickUpItem());
+            return Items.Count - 1;
         }
 
         public void Drop(int itemId)

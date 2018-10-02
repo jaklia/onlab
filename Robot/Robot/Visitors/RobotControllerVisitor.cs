@@ -9,6 +9,7 @@ using Antlr4.Runtime.Tree;
 using System.Windows.Controls;
 using Robot.Model;
 using System.Windows.Media.Imaging;
+using Robot.Commands;
 
 namespace Robot.Visitors
 {
@@ -80,7 +81,12 @@ namespace Robot.Visitors
         public override object VisitMoveInstruction([NotNull] RobotGrammarParser.MoveInstructionContext context)
         {
             int amount = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
-            Game.MoveRobot(amount);
+            
+            // just to test if it works / moveCmd.Do() won't be executed here
+             
+            MoveCommand moveCmd = new MoveCommand(Game, amount);
+            moveCmd.Do();  
+            //Game.MoveRobot(amount);
             return 0;
         }
 
