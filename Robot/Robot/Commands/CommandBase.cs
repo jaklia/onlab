@@ -8,6 +8,8 @@ namespace Robot.Commands
 {
     public abstract class CommandBase
     {
-        public abstract void Execute();
+        public abstract void Do();
+
+        public abstract void Undo();
     }
 }

@@ -3,19 +3,10 @@ using Robot.Grammar;
 using Robot.Model;
 using Robot.Visitors;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Robot
 {
@@ -28,6 +19,9 @@ namespace Robot
         Game game;
         Image RobotImg = new Image();
         Game startingState;
+        Commands.CommandManager cmdManager;  
+        // !!!  TODO:  add the commands in the visitor, and execute them in DoCmdBtn_Click
+        //           and UndoCmdBtn_Click
 
         public MainWindow()
         {
@@ -47,10 +41,13 @@ namespace Robot
         void InitGame()
         {
             game = new Game(10, 10);
+            cmdManager = new Commands.CommandManager();
             game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
+            DoCmdBtn.IsEnabled = false;
+            UndoCmdBtn.IsEnabled = false;
             textBox.Text = "";
         }
 
@@ -72,24 +69,54 @@ namespace Robot
             tree.ExpandSubtree();
             treeView.Items.Add(tree);
 
+            game = startingState.Clone();
+            cmdManager.Reset();
+
+            // build cmd list
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
+            robotControllerVisitor.VisitProgram(ctx);
+            DrawGame(game);
+
             StartButton.IsEnabled = true;
+            DoCmdBtn.IsEnabled = true;
+            UndoCmdBtn.IsEnabled = true;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game);
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
             robotControllerVisitor.VisitProgram(ctx);
             DrawGame(game);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetGame();
+        }
+
+        void ResetGame()
+        {
             treeView.Items.Clear();
             game = startingState.Clone();
+            cmdManager.Reset();
             textBox.Text = "";
             StartButton.IsEnabled = false;
+            DoCmdBtn.IsEnabled = false;
+            UndoCmdBtn.IsEnabled = false;
             DrawGame(game);
             //InitGame();
+        }
+
+        private void DoCmdBtn_Click(object sender, RoutedEventArgs e)
+        {
+            cmdManager.DoCommand();
+            DrawGame(game);
+        }
+
+        private void UndoCmdBtn_Click(object sender, RoutedEventArgs e)
+        {
+            cmdManager.UndoCommand();
+            DrawGame(game);
         }
 
         void DrawGame(Game game)

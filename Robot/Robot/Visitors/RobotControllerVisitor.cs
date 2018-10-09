@@ -9,16 +9,19 @@ using Antlr4.Runtime.Tree;
 using System.Windows.Controls;
 using Robot.Model;
 using System.Windows.Media.Imaging;
+using Robot.Commands;
 
 namespace Robot.Visitors
 {
     class RobotControllerVisitor : RobotGrammarBaseVisitor<object>
     {
         Game Game;
+        CommandManager cmdManager;
 
-        public RobotControllerVisitor(Game game)
+        public RobotControllerVisitor(Game game, CommandManager cmdManager)
         {
             Game = game;
+            this.cmdManager = cmdManager;
         }
 
         public override object VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
@@ -73,27 +76,39 @@ namespace Robot.Visitors
         public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
         {
             int itemId = int.Parse(VisitItemId(context.itemId()).ToString());
-            Game.DropItem(itemId);
+            //DropCommand dropCmd = new DropCommand(Game, itemId);
+            //dropCmd.Do();
+            cmdManager.AddCommand(new DropCommand(Game, itemId));
+            //Game.DropItem(itemId);
             return 0;
         }
 
         public override object VisitMoveInstruction([NotNull] RobotGrammarParser.MoveInstructionContext context)
         {
             int amount = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
-            Game.MoveRobot(amount);
+            //MoveCommand moveCmd = new MoveCommand(Game, amount);
+            //moveCmd.Do();
+            cmdManager.AddCommand(new MoveCommand(Game, amount));
+            //Game.MoveRobot(amount);
             return 0;
         }
 
         public override object VisitPickUpInstruction([NotNull] RobotGrammarParser.PickUpInstructionContext context)
         {
-            Game.PickUpItem();
+            //PickUpCommand pickUpCmd = new PickUpCommand(Game);
+            //pickUpCmd.Do();
+            cmdManager.AddCommand(new PickUpCommand(Game));
+            //Game.PickUpItem();
             return 0;
         }
 
         public override object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
         {
             Model.Robot.TurnDir dir = (Model.Robot.TurnDir)VisitDir(context.dir());
-            Game.TurnRobot(dir);
+            //TurnCommand turnCmd = new TurnCommand(Game, dir);
+            //turnCmd.Do();
+            cmdManager.AddCommand(new TurnCommand(Game, dir));
+            //Game.TurnRobot(dir);
             return 0;
         }
 

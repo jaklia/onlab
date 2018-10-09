@@ -24,9 +24,10 @@ namespace Robot.Model
             Player = new Robot(Board, other.Player);
         }
 
-        public void MoveRobot (int moveAmount)
+        // return int instead of void
+        public int MoveRobot (int moveAmount)
         {
-            Player.Move(moveAmount);
+            return Player.Move(moveAmount);
         }
 
         public void TurnRobot (Robot.TurnDir turnDir)
@@ -34,9 +35,10 @@ namespace Robot.Model
             Player.Turn(turnDir);
         }
 
-        public void PickUpItem ()
+        // return item id
+        public int PickUpItem ()
         {
-            Player.PickUp();
+            return Player.PickUp();
         }
 
         public void DropItem (int itemId)
@@ -47,8 +49,6 @@ namespace Robot.Model
         // get deep copy of the instance
         public Game Clone()
         {
-            //Game gm = new Game(0, 0);
-            //gm.Board = 
             return new Game(this);
         }
     }
