@@ -14,27 +14,35 @@ namespace Robot.Commands
 
         public CommandManager()
         {
+            Reset();
+        }
+
+        public void Reset()
+        {
             commandList = new List<CommandBase>();
             lastExecuted = -1;
         }
 
-        public void DoCommand()
+        public bool DoCommand()
         {
+            //System.Windows.MessageBox.Show(lastExecuted.ToString());
             if (commandList.Count > 0)
             {
                 if (lastExecuted == commandList.Count - 1)
                 {
                     // all commands are executed
                     // TODO: disable the |>| btn
-                    return;
+                    return false;
                 }
                 lastExecuted++;
                 commandList[lastExecuted].Do();
+                return true;
             }
             // else: no cmds to execute
+            return false;
         }
 
-        public void UndoCommand()
+        public bool UndoCommand()
         {
             if (commandList.Count > 0)
             {
@@ -42,11 +50,18 @@ namespace Robot.Commands
                 {
                     // all command are undone
                     // TODO: disable the |<| btn
-                    return;
+                    return false;
                 }
                 commandList[lastExecuted].Undo();
                 lastExecuted--;
+                return true;
             }
+            return false;
+        }
+
+        public void AddCommand(CommandBase cmd)
+        {
+            commandList.Add(cmd);
         }
 
     }

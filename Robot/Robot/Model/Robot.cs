@@ -53,32 +53,32 @@ namespace Robot.Model
             switch (Dir)
             {
                 case MoveDir.UP:
-                        while (amount > 0 && MoveUp())
-                        {
-                           // MoveUp();
-                            amount--;
-                        }
+                    while (amount > 0 && MoveUp())
+                    {
+                        // MoveUp();
+                        amount--;
+                    }
                     break;
                 case MoveDir.RIGHT:
                     while (amount > 0 && MoveRight())
                     {
-                       // MoveRight();
+                        // MoveRight();
                         amount--;
                     }
                     break;
                 case MoveDir.DOWN:
-                        while (amount > 0 && MoveDown())
-                        {
-                           // MoveDown();
-                            amount--;
-                        }
+                    while (amount > 0 && MoveDown())
+                    {
+                        // MoveDown();
+                        amount--;
+                    }
                     break;
                 case MoveDir.LEFT:
-                        while (amount > 0 && MoveLeft())
-                        {
-                           // MoveLeft();
-                            amount--;
-                        }
+                    while (amount > 0 && MoveLeft())
+                    {
+                        // MoveLeft();
+                        amount--;
+                    }
                     break;
                 default:
                     break;
