@@ -1,13 +1,16 @@
 grammar RobotGrammar;
 
-program: instructionSet;
+program: functionDefinitions 
+         instructionSet;
+functionDefinitions: functionDef*;
 instructionSet: instruction+;
 instruction: moveInstruction |
              turnInstruction |
              loopWhileInstruction |
              loopInstruction |
              pickUpInstruction |
-             dropInstruction;
+             dropInstruction |
+             functionCall;
 
 loopInstruction: LOOPCMD repeatCnt 
                      instructionSet 
@@ -20,6 +23,11 @@ turnInstruction: TURNCMD dir;
 pickUpInstruction: PICKUPCMD;
 dropInstruction: DROPCMD itemId;
 
+functionDef: FUNCTIONCMD functionName
+                  instructionSet
+             FUNCTIONENDCMD;
+functionCall: functionName BRACKET1 BRACKET2;
+
 
 condition: (NOT? (FREECMD|WALLCMD));    //   A && B,  A || B  ???
 
@@ -29,7 +37,10 @@ rightDir: RIGHT|PLUS;
 moveAmount: INT;
 repeatCnt: INT;
 itemId: INT;
+functionName: ID;
 
+FUNCTIONCMD: 'function';
+FUNCTIONENDCMD: 'end function';
 LOOPENDCMD: 'end loop';
 LOOPWHILECMD: 'loop while';
 LOOPCMD: 'loop';
@@ -50,5 +61,6 @@ MINUS: '-';
 BRACKET1: '(';
 BRACKET2: ')';
 INT: [0-9]+;
+ID: [a-zA-Z][a-zA-Z0-9_]*;
 
 WS: 	(' ' | '\t' | '\n' | '\r') -> skip;
