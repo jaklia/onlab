@@ -17,24 +17,48 @@ namespace Robot.Visitors
     {
         Game Game;
         CommandManager cmdManager;
+        Dictionary<string, List<CommandBase>> declaredFunctions;
+        // szimbólumtáblák a fordprog tárgynál
+
+        // konstans paraméterek
+        // hibakezelés: errornode-n kívül milyen hibák
+        // pályagenerátor
+        // megjelenített ast szépítése
 
         public RobotControllerVisitor(Game game, CommandManager cmdManager)
         {
             Game = game;
             this.cmdManager = cmdManager;
+            declaredFunctions = new Dictionary<string, List<CommandBase>>();
         }
 
         public override object VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
         {
-            VisitInstructionSet(context.instructionSet());
+            VisitFunctionDefinitions(context.functionDefinitions());
+            foreach (var instruction in context.instructionSet().instruction())
+            {
+                cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
+            }
+
+            //VisitInstructionSet(context.instructionSet());
             return 0;
         }
 
         public override object VisitInstructionSet([NotNull] RobotGrammarParser.InstructionSetContext context)
         {
+            List<CommandBase> cmdList = new List<CommandBase>();
             foreach (var instruction in context.instruction())
             {
-                VisitInstruction(instruction);
+                cmdList.Add((CommandBase)VisitInstruction(instruction));
+            }
+            return cmdList;
+        }
+
+        public override object VisitFunctionDefinitions([NotNull] RobotGrammarParser.FunctionDefinitionsContext context)
+        {
+            foreach (var function in context.functionDef())
+            {
+                  VisitFunctionDef(function);
             }
             return 0;
         }
@@ -42,28 +66,48 @@ namespace Robot.Visitors
         public override object VisitInstruction([NotNull] RobotGrammarParser.InstructionContext context)
         {
             if (context.loopInstruction() != null)
-                VisitLoopInstruction(context.loopInstruction());
+                return VisitLoopInstruction(context.loopInstruction());
             else if (context.loopWhileInstruction() != null)
-                VisitLoopWhileInstruction(context.loopWhileInstruction());
+                return VisitLoopWhileInstruction(context.loopWhileInstruction());
             else if (context.dropInstruction() != null)
-                VisitDropInstruction(context.dropInstruction());
+                return VisitDropInstruction(context.dropInstruction());
             else if (context.moveInstruction() != null)
-                VisitMoveInstruction(context.moveInstruction());
+                return VisitMoveInstruction(context.moveInstruction());
             else if (context.pickUpInstruction() != null)
-                VisitPickUpInstruction(context.pickUpInstruction());
+                return VisitPickUpInstruction(context.pickUpInstruction());
             else if (context.turnInstruction() != null)
-                VisitTurnInstruction(context.turnInstruction());
-            return 0;
+                return VisitTurnInstruction(context.turnInstruction());
+            else if (context.functionCall() != null)
+                return VisitFunctionCall(context.functionCall());
+            return null;
         }
 
         public override object VisitLoopInstruction([NotNull] RobotGrammarParser.LoopInstructionContext context)
         {
             int cnt = int.Parse(VisitRepeatCnt(context.repeatCnt()).ToString());
-            for (int i=0; i<cnt; i++)
+            List<CommandBase> cmdList = new List<CommandBase>();
+            foreach (var instruction in context.instructionSet().instruction())
             {
-                VisitInstructionSet(context.instructionSet());
+                cmdList.Add((CommandBase)VisitInstruction(instruction));
             }
+            LoopCommand loopCmd = new LoopCommand(Game, cnt, cmdList);
+            return loopCmd;
+        }
+
+        public override object VisitFunctionDef([NotNull] RobotGrammarParser.FunctionDefContext context)
+        {
+            string name = context.functionName().GetText();
+            List<CommandBase> cmdList = new List<CommandBase>();
+            cmdList = (List<CommandBase>) VisitInstructionSet(context.instructionSet());
+            declaredFunctions[name] = cmdList;
             return 0;
+        }
+
+        public override object VisitFunctionCall([NotNull] RobotGrammarParser.FunctionCallContext context)
+        {
+            string name = context.functionName().GetText();
+            FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
+            return functionCmd;
         }
 
         public override object VisitLoopWhileInstruction([NotNull] RobotGrammarParser.LoopWhileInstructionContext context)
@@ -76,40 +120,40 @@ namespace Robot.Visitors
         public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
         {
             int itemId = int.Parse(VisitItemId(context.itemId()).ToString());
-            //DropCommand dropCmd = new DropCommand(Game, itemId);
-            //dropCmd.Do();
-            cmdManager.AddCommand(new DropCommand(Game, itemId));
+            DropCommand dropCmd = new DropCommand(Game, itemId);
+            
+            //cmdManager.AddCommand(new DropCommand(Game, itemId));
             //Game.DropItem(itemId);
-            return 0;
+            return dropCmd;
         }
 
         public override object VisitMoveInstruction([NotNull] RobotGrammarParser.MoveInstructionContext context)
         {
             int amount = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
-            //MoveCommand moveCmd = new MoveCommand(Game, amount);
-            //moveCmd.Do();
-            cmdManager.AddCommand(new MoveCommand(Game, amount));
+            MoveCommand moveCmd = new MoveCommand(Game, amount);
+
+            //cmdManager.AddCommand(new MoveCommand(Game, amount));
             //Game.MoveRobot(amount);
-            return 0;
+            return moveCmd;
         }
 
         public override object VisitPickUpInstruction([NotNull] RobotGrammarParser.PickUpInstructionContext context)
         {
-            //PickUpCommand pickUpCmd = new PickUpCommand(Game);
-            //pickUpCmd.Do();
-            cmdManager.AddCommand(new PickUpCommand(Game));
+            PickUpCommand pickUpCmd = new PickUpCommand(Game);
+            
+            //cmdManager.AddCommand(new PickUpCommand(Game));
             //Game.PickUpItem();
-            return 0;
+            return pickUpCmd;
         }
 
         public override object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
         {
             Model.Robot.TurnDir dir = (Model.Robot.TurnDir)VisitDir(context.dir());
-            //TurnCommand turnCmd = new TurnCommand(Game, dir);
-            //turnCmd.Do();
-            cmdManager.AddCommand(new TurnCommand(Game, dir));
+            TurnCommand turnCmd = new TurnCommand(Game, dir);
+            
+            //cmdManager.AddCommand(new TurnCommand(Game, dir));
             //Game.TurnRobot(dir);
-            return 0;
+            return turnCmd;
         }
 
         public override object VisitItemId([NotNull] RobotGrammarParser.ItemIdContext context)

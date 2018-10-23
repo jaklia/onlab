@@ -105,20 +105,35 @@
                       Height="407"
                       HorizontalAlignment="Right"
                       VerticalAlignment="Stretch" />
+            
+            <Button x:Name="UndoAllBtn"
+                    Content="&lt;&lt;"
+                    Canvas.Left="330"
+                    Canvas.Top="420"
+                    Width="20"
+                    Click="UndoAllBtn_Click" 
+                    ToolTip="Undo all commands" />
             <Button x:Name="UndoCmdBtn"
                     Content="&lt;"
-                    Canvas.Left="330"
+                    Canvas.Left="370"
                     Canvas.Top="420"
                     Width="20"
                     Click="UndoCmdBtn_Click"
                     ToolTip="Undo last command"/>
             <Button x:Name="DoCmdBtn"
                     Content=">"
-                    Canvas.Left="370"
+                    Canvas.Left="410"
                     Canvas.Top="420"
                     Width="20"
                     Click="DoCmdBtn_Click"
                     ToolTip="Run next command"/>
+            <Button x:Name="DoAllBtn"
+                    Content=">>"
+                    Canvas.Left="450"
+                    Canvas.Top="420"
+                    Width="20"
+                    Click="DoAllBtn_Click"
+                    ToolTip="Run all commands" />
 
         </Canvas>
 

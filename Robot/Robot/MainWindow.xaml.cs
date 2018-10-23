@@ -176,5 +176,16 @@ namespace Robot
             
         }
 
+        private void UndoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            cmdManager.UndoAll();
+            DrawGame(game);
+        }
+
+        private void DoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            cmdManager.DoAll();
+            DrawGame(game);
+        }
     }
 }
