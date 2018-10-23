@@ -59,6 +59,30 @@ namespace Robot.Commands
             return false;
         }
 
+        public void DoAll()
+        {
+            if (commandList.Count > 0)
+            {
+                while (lastExecuted < commandList.Count - 1)
+                {
+                    lastExecuted++;
+                    commandList[lastExecuted].Do();
+                }
+            }
+        }
+
+        public void UndoAll()
+        {
+            if (commandList.Count > 0)
+            {
+                while(lastExecuted >= 0)
+                {
+                    commandList[lastExecuted].Undo();
+                    lastExecuted--;
+                }
+            }
+        }
+
         public void AddCommand(CommandBase cmd)
         {
             commandList.Add(cmd);

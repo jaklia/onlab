@@ -15,7 +15,16 @@ namespace Robot.Visitors
 
         public override TreeViewItem VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
         {
+            TreeViewItem item = new TreeViewItem();
+
+            if (context.functionDefinitions() != null)
+            {
+                item = VisitFunctionDefinitions(context.functionDefinitions());
+            }
+            item.Header = "Functions";
+
             TreeViewItem newItem = VisitInstructionSet(context.instructionSet());
+            newItem.Items.Add(item);
             newItem.Header = "program";
             if (ExpandAll)
             {
@@ -30,6 +39,16 @@ namespace Robot.Visitors
             foreach (var instruction in context.instruction())
             {
                 item.Items.Add(VisitInstruction(instruction));
+            }
+            return item;
+        }
+
+        public override TreeViewItem VisitFunctionDefinitions([NotNull] RobotGrammarParser.FunctionDefinitionsContext context)
+        {
+            TreeViewItem item = new TreeViewItem();
+            foreach (var function in context.functionDef())
+            {
+                item.Items.Add(VisitFunctionDef(function));
             }
             return item;
         }
@@ -49,6 +68,8 @@ namespace Robot.Visitors
                 newItem = VisitPickUpInstruction(context.pickUpInstruction());
             else if (context.turnInstruction() != null)
                 newItem = VisitTurnInstruction(context.turnInstruction());
+            else if (context.functionCall() != null)
+                newItem = VisitFunctionCall(context.functionCall());
             return newItem;
         }
 
@@ -59,6 +80,30 @@ namespace Robot.Visitors
             string headerText = context.LOOPCMD().GetText() + " " + context.repeatCnt().GetText();
             TreeViewItem newItem = VisitInstructionSet(context.instructionSet());
             newItem.Header = headerText;
+            //item.Items.Add(newItem);
+            //return item;
+            return newItem;
+        }
+
+        public override TreeViewItem VisitFunctionDef([NotNull] RobotGrammarParser.FunctionDefContext context)
+        {
+            //TreeViewItem item = new TreeViewItem();
+            //item.Header = "loopInstruction";
+            string headerText = context.FUNCTIONCMD().GetText() + " " + context.functionName().GetText();
+            TreeViewItem newItem = VisitInstructionSet(context.instructionSet());
+            newItem.Header = headerText;
+            //item.Items.Add(newItem);
+            //return item;
+            return newItem;
+        }
+
+        public override TreeViewItem VisitFunctionCall([NotNull] RobotGrammarParser.FunctionCallContext context)
+        {
+            //TreeViewItem item = new TreeViewItem();
+            //item.Header = "loopInstruction";
+          //  string headerText = context.functionName().GetText() + context.BRACKET1().GetText() + context.BRACKET2().GetText();
+            TreeViewItem newItem = new TreeViewItem();
+            newItem.Header = context.functionName().GetText() + context.BRACKET1().GetText() + context.BRACKET2().GetText();
             //item.Items.Add(newItem);
             //return item;
             return newItem;
