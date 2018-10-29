@@ -23,10 +23,10 @@ turnInstruction: TURNCMD dir;
 pickUpInstruction: PICKUPCMD;
 dropInstruction: DROPCMD itemId;
 
-functionDef: FUNCTIONCMD functionName
+functionDef: FUNCTIONCMD functionName BRACKET1 parameterList? BRACKET2
                   instructionSet
              FUNCTIONENDCMD;
-functionCall: functionName BRACKET1 BRACKET2;
+
 
 
 condition: (NOT? (FREECMD|WALLCMD));    //   A && B,  A || B  ???
@@ -38,6 +38,13 @@ moveAmount: INT;
 repeatCnt: INT;
 itemId: INT;
 functionName: ID;
+
+parameterList: parameter (COMMA parameter)*;
+
+functionCall: functionName BRACKET1 parameterList? BRACKET2;
+
+parameter: INT;
+parameterDef: PARAMTYPE ID;
 
 FUNCTIONCMD: 'function';
 FUNCTIONENDCMD: 'end function';
@@ -51,6 +58,8 @@ DROPCMD: 'drop';
 FREECMD: 'free';
 WALLCMD: 'wall';
 
+PARAMTYPE: 'int';
+
 NOT: 'not'|'!';
 AND: 'and'|'&&';
 OR: 'or'|'||';
@@ -60,6 +69,7 @@ PLUS: '+';
 MINUS: '-';
 BRACKET1: '(';
 BRACKET2: ')';
+COMMA: ',';
 INT: [0-9]+;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 
