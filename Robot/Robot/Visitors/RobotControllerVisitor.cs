@@ -20,9 +20,10 @@ namespace Robot.Visitors
         Dictionary<string, List<CommandBase>> declaredFunctions;
         // szimbólumtáblák a fordprog tárgynál
 
-        // konstans paraméterek
+        //  fv / loop  lépésenként
+        // pályagenerátor  --> menüpont
+        // konstans paraméterek  --> int / dir
         // hibakezelés: errornode-n kívül milyen hibák
-        // pályagenerátor
         // megjelenített ast szépítése
 
         public RobotControllerVisitor(Game game, CommandManager cmdManager)

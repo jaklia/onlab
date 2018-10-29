@@ -59,7 +59,7 @@ namespace Robot.Commands
             return false;
         }
 
-        public void DoAll()
+        public void DoAll()  /// start btn
         {
             if (commandList.Count > 0)
             {
@@ -71,7 +71,7 @@ namespace Robot.Commands
             }
         }
 
-        public void UndoAll()
+        public void UndoAll() // reset btn
         {
             if (commandList.Count > 0)
             {
