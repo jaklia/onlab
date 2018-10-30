@@ -84,14 +84,14 @@ namespace Robot
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
-            robotControllerVisitor.VisitProgram(ctx);
+            cmdManager.DoAll();
             DrawGame(game);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            ResetGame();
+            cmdManager.UndoAll();
+            DrawGame(game);
         }
 
         void ResetGame()
@@ -117,6 +117,16 @@ namespace Robot
         {
             cmdManager.UndoCommand();
             DrawGame(game);
+        }
+
+        private void UndoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // enable only if we are in a loop / function
+        }
+
+        private void DoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // enable only if we are in a loop / function
         }
 
         void DrawGame(Game game)
@@ -176,16 +186,5 @@ namespace Robot
             
         }
 
-        private void UndoAllBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cmdManager.UndoAll();
-            DrawGame(game);
-        }
-
-        private void DoAllBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cmdManager.DoAll();
-            DrawGame(game);
-        }
     }
 }
