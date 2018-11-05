@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
 
 namespace Robot.Model
 {
     public class Robot
     {
-        public enum MoveDir { UP = 0, RIGHT = 1, DOWN = 2, LEFT = 3 };
-        public enum TurnDir { LEFT = -1, RIGHT = 1, BACK = 2 };
         List<Item> Items;
         
         public MoveDir Dir { get; private set; }

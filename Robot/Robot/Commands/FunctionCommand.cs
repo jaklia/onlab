@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    class FunctionCommand : CommandBase
+    public class FunctionCommand : CommandBase
     {
         private List<CommandBase> commands;
         private Game gameRef;
@@ -18,6 +18,22 @@ namespace Robot.Commands
             this.commands = new List<CommandBase>(commands);
         }
 
+        public override bool Done
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override bool Undone
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public override void Do()
         {
             foreach (var cmd in commands)
@@ -26,6 +42,13 @@ namespace Robot.Commands
             }
         }
 
+        public override void DoAll()
+        {
+            throw new NotImplementedException();
+        }
+
+      
+
         public override void Undo()
         {
             for (int i=commands.Count-1; i>=0; i--)
@@ -33,5 +56,12 @@ namespace Robot.Commands
                 commands[i].Undo();
             }
         }
+
+        public override void UndoAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }

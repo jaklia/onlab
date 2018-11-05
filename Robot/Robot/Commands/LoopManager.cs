@@ -1,20 +1,16 @@
 ﻿using Robot.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    public class LoopManager
+    public class LoopManager 
     {
         private int repeatCnt;
         private List<CommandBase> commands;
 
         private Game gameRef;
 
-        private int iteration = 0;
+        private int iteration = 1;
         private int index = 0;
 
         public LoopManager(Game game, int repeatCnt, List<CommandBase> commands)
@@ -30,7 +26,7 @@ namespace Robot.Commands
             {
                 return;
             }
-            if (iteration < repeatCnt - 1 && index == commands.Count)
+            if (iteration < repeatCnt && index == commands.Count)
             {
                 iteration++;
                 index = 0;
@@ -41,11 +37,11 @@ namespace Robot.Commands
 
         public void Undo()
         {
-            if (iteration == 0 && index == 0)
+            if (iteration == 1 && index == 0)
             {
                 return;
             }
-            if (iteration > 0 && index == 0)
+            if (iteration > 1 && index == 0)
             {
                 iteration--;
                 index = commands.Count;
@@ -56,18 +52,68 @@ namespace Robot.Commands
 
         public void DoAll()
         {
-            while(iteration < repeatCnt || index != commands.Count)
+            //while(iteration < repeatCnt || index != commands.Count)
+            //{
+            //    Do();
+            //}
+            for (; iteration<=repeatCnt; iteration++)
             {
-                Do();
+                for (; index < commands.Count; index++)
+                {
+                    commands[index].DoAll();
+                }
+                index = 0;
             }
+            iteration = repeatCnt;
+            index = commands.Count;
         }
 
         public void UndoAll()
         {
-            while (iteration > 0 || index > 0)
+            //while (iteration > 1 || index > 0)
+            //{
+            //    Undo();
+            //}
+            for (; iteration>0; iteration--)
             {
-                Undo();
+                for (; index>0; index--)
+                {
+                    commands[index - 1].UndoAll();
+                }
+                index = commands.Count;
             }
+            iteration = 1;
+            index = 0;
+        }
+
+        public CommandBase getNext()
+        {
+            if (commands[index] is ICommandList)
+            {
+                return ((ICommandList)commands[index]).nextCmd();
+            } else {
+                return null;
+            }
+        }
+
+        public CommandBase getPrev()
+        {
+            if (commands[index - 1] is ICommandList)
+            {
+                return ((ICommandList)commands[index]).prevCmd();
+            } else {
+                return null;
+            }
+        }
+
+        public bool AllDone()
+        {
+            return iteration == repeatCnt && index == commands.Count;
+        }
+
+        public bool AllUndone()
+        {
+            return iteration == 1 && index == 0;
         }
 
     }

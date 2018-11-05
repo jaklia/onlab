@@ -64,15 +64,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\CommandBase.cs" />
-    <Compile Include="Commands\CommandFactory.cs" />
     <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Commands\DropCommand.cs" />
     <Compile Include="Commands\FunctionCommand.cs" />
-    <Compile Include="Commands\ICommandListContext.cs" />
+    <Compile Include="Commands\ICommandList.cs" />
     <Compile Include="Commands\LoopCommand.cs" />
     <Compile Include="Commands\LoopManager.cs" />
     <Compile Include="Commands\MoveCommand.cs" />
     <Compile Include="Commands\PickUpCommand.cs" />
+    <Compile Include="Commands\SimpleCommand.cs" />
     <Compile Include="Commands\TurnCommand.cs" />
     <Compile Include="Grammar\MapEditorGrammar.g4.lexer.cs">
       <DependentUpon>MapEditorGrammar.g4</DependentUpon>
@@ -85,7 +85,9 @@
     <Compile Include="Model\Field.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\MoveDir.cs" />
     <Compile Include="Model\Robot.cs" />
+    <Compile Include="Model\TurnDir.cs" />
     <Compile Include="Model\Wall.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

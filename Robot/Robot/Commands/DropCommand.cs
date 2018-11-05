@@ -1,13 +1,8 @@
 ﻿using Robot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    class DropCommand : CommandBase
+    class DropCommand : SimpleCommand
     {
 
         private Game gameRef;

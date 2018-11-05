@@ -1,14 +1,8 @@
 ﻿using Robot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Robot.Model.Robot;
 
 namespace Robot.Commands
 {
-    class TurnCommand : CommandBase
+    class TurnCommand : SimpleCommand
     {
         Game gameRef;
         TurnDir turnDir, reverseDir;

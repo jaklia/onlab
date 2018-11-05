@@ -10,75 +10,101 @@ namespace Robot.Commands
     class CommandManager
     {
         private List<CommandBase> commandList;
-        private int lastExecuted;
+        private int index;
+
+        private CommandBase nextCmd { get;  set; }
 
         public CommandManager()
         {
-            Reset();
+            //Reset();
+            commandList = new List<CommandBase>();
+            index = 0;
         }
 
         public void Reset()
         {
             commandList = new List<CommandBase>();
-            lastExecuted = -1;
+            index = 0;
         }
 
-        public bool DoCommand()
+        public void DoCommand()
         {
-            //System.Windows.MessageBox.Show(lastExecuted.ToString());
             if (commandList.Count > 0)
             {
-                if (lastExecuted == commandList.Count - 1)
+                if (index == commandList.Count)
                 {
-                    // all commands are executed
-                    // TODO: disable the |>| btn
-                    return false;
+                    return;
                 }
-                lastExecuted++;
-                commandList[lastExecuted].Do();
-                return true;
-            }
-            // else: no cmds to execute
-            return false;
-        }
-
-        public bool UndoCommand()
-        {
-            if (commandList.Count > 0)
-            {
-                if (lastExecuted < 0)
+                commandList[index].Do();
+                if (commandList[index].Done)
                 {
-                    // all command are undone
-                    // TODO: disable the |<| btn
-                    return false;
-                }
-                commandList[lastExecuted].Undo();
-                lastExecuted--;
-                return true;
-            }
-            return false;
-        }
-
-        public void DoAll()  /// start btn
-        {
-            if (commandList.Count > 0)
-            {
-                while (lastExecuted < commandList.Count - 1)
-                {
-                    lastExecuted++;
-                    commandList[lastExecuted].Do();
+                    index++;
                 }
             }
         }
 
-        public void UndoAll() // reset btn
+        public void UndoCommand()
         {
             if (commandList.Count > 0)
             {
-                while(lastExecuted >= 0)
+                if (index <= 0)
                 {
-                    commandList[lastExecuted].Undo();
-                    lastExecuted--;
+                    return;
+                }
+                commandList[index - 1].Undo();
+                if (commandList[index - 1].Undone)
+                {
+                    index--;
+                }
+            }
+        }
+
+        public void RunProg()  /// start btn
+        {
+            while (index < commandList.Count)
+            {
+                commandList[index].DoAll();
+                index++;
+            }
+        }
+
+        public void UndoProg() // reset btn
+        {
+            while (index > 0)
+            {
+                commandList[index - 1].UndoAll();
+                index--;
+            }
+        }
+
+        public void DoAll ()
+        {
+            if (commandList.Count > 0)
+            {
+                if (index == commandList.Count)
+                {
+                    return;
+                }
+                commandList[index].DoAll();
+                if (commandList[index].Done)
+                {
+                    index++;
+                }
+            }
+        }
+
+        public void UndoAll()
+        {
+            if (commandList.Count > 0)
+            {
+                if (index <= 0)
+                {
+                    return;
+                }
+                commandList[index - 1].UndoAll();
+                if (commandList[index - 1].Undone)
+                {
+                    index--;
                 }
             }
         }
@@ -86,6 +112,17 @@ namespace Robot.Commands
         public void AddCommand(CommandBase cmd)
         {
             commandList.Add(cmd);
+
+            if (commandList.Count == 1)
+            {
+                if (commandList[0] is ICommandList)
+                {
+                    nextCmd = ((ICommandList)commandList[0]).nextCmd();
+                } else
+                {
+                    nextCmd = commandList[0];
+                }
+            }
         }
 
     }

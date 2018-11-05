@@ -1,14 +1,7 @@
 ﻿using Robot.Grammar;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Windows.Controls;
 using Robot.Model;
-using System.Windows.Media.Imaging;
 using Robot.Commands;
 
 namespace Robot.Visitors
@@ -149,7 +142,7 @@ namespace Robot.Visitors
 
         public override object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
         {
-            Model.Robot.TurnDir dir = (Model.Robot.TurnDir)VisitDir(context.dir());
+            TurnDir dir = (TurnDir)VisitDir(context.dir());
             TurnCommand turnCmd = new TurnCommand(Game, dir);
             
             //cmdManager.AddCommand(new TurnCommand(Game, dir));
@@ -175,12 +168,12 @@ namespace Robot.Visitors
 
         public override object VisitLeftDir([NotNull] RobotGrammarParser.LeftDirContext context)
         {
-            return Model.Robot.TurnDir.LEFT;
+            return TurnDir.LEFT;
         }
 
         public override object VisitRightDir([NotNull] RobotGrammarParser.RightDirContext context)
         {
-            return Model.Robot.TurnDir.RIGHT;
+            return TurnDir.RIGHT;
         }
 
         public override object VisitMoveAmount([NotNull] RobotGrammarParser.MoveAmountContext context)

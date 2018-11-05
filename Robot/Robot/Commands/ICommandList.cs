@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    public interface ICommandListContext
+    public interface ICommandList
     {
+        CommandBase nextCmd();
 
+        CommandBase prevCmd();
     }
 }
