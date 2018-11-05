@@ -8,9 +8,11 @@ namespace Robot.Commands
 {
     public abstract class SimpleCommand : CommandBase
     {
-        // valszeg nem a legjobb megoldas
-        public override bool Done { get;  } = true; 
-        public override bool Undone { get;  } = true;
+
+        protected bool _done = false;
+
+        public override bool Done { get { return _done; } }
+        public override bool Undone { get {return  !_done; } }
 
         // simple command:  DoAll must be the same as Do()
 

@@ -19,6 +19,7 @@ namespace Robot.Commands
         public override void Do()
         {
             steps = gameRef.MoveRobot(totalAmount);
+            _done = true;
         }
 
         public override void Undo()
@@ -26,6 +27,7 @@ namespace Robot.Commands
             gameRef.TurnRobot(TurnDir.BACK);
             gameRef.MoveRobot(steps);
             gameRef.TurnRobot(TurnDir.BACK);
+            _done = false;
         }
     }
 }

@@ -19,11 +19,13 @@ namespace Robot.Commands
         public override void Do()
         {
             gameRef.TurnRobot(turnDir);
+            _done = true;
         }
 
         public override void Undo()
         {
             gameRef.TurnRobot(reverseDir);
+            _done = false;
         }
     }
 }

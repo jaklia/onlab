@@ -10,7 +10,8 @@ namespace Robot.Commands
     class CommandManager
     {
         private List<CommandBase> commandList;
-        private int index;
+        private int doIndex;
+        private int undoIndex;
 
         private CommandBase nextCmd { get;  set; }
 
@@ -18,94 +19,113 @@ namespace Robot.Commands
         {
             //Reset();
             commandList = new List<CommandBase>();
-            index = 0;
+            doIndex = 0;
+            undoIndex = -1;
         }
 
         public void Reset()
         {
             commandList = new List<CommandBase>();
-            index = 0;
+            doIndex = 0;
+            undoIndex = -1;
         }
 
+        // run the next command (run step by step if it's not a simple command)
         public void DoCommand()
         {
             if (commandList.Count > 0)
             {
-                if (index == commandList.Count)
+                if (doIndex == commandList.Count)
                 {
                     return;
                 }
-                commandList[index].Do();
-                if (commandList[index].Done)
+                commandList[doIndex].Do();
+                undoIndex = doIndex;
+                if (commandList[doIndex].Done)
                 {
-                    index++;
-                }
+                    //undoIndex = doIndex;
+                    doIndex++;
+                } /*else if (!commandList[doIndex].Done && !commandList[doIndex].Undone)
+                {
+
+                }*/
             }
         }
 
+        // undo the last command (step by step if it's not a simple command)
         public void UndoCommand()
         {
             if (commandList.Count > 0)
             {
-                if (index <= 0)
+                if (undoIndex < 0)
                 {
                     return;
                 }
-                commandList[index - 1].Undo();
-                if (commandList[index - 1].Undone)
+                commandList[undoIndex].Undo();
+                doIndex = undoIndex;
+                if (commandList[undoIndex].Undone)
                 {
-                    index--;
+                    undoIndex--;
                 }
             }
         }
-
-        public void RunProg()  /// start btn
+        
+        //  run the whole program (starting after the last executed command)
+        public void RunProg()  
         {
-            while (index < commandList.Count)
+            while (doIndex < commandList.Count)
             {
-                commandList[index].DoAll();
-                index++;
+                commandList[doIndex].DoAll();
+                doIndex++;
             }
+            undoIndex = doIndex - 1;
+            
         }
 
-        public void UndoProg() // reset btn
+        // undo the whole program (starting with the last executed command)
+        public void UndoProg() 
         {
-            while (index > 0)
+            while (undoIndex >= 0)
             {
-                commandList[index - 1].UndoAll();
-                index--;
+                commandList[undoIndex].UndoAll();
+                undoIndex--;
             }
+            doIndex = undoIndex + 1;
         }
 
+        // run the next command (run all contained commands if it's not simple)
         public void DoAll ()
         {
             if (commandList.Count > 0)
             {
-                if (index == commandList.Count)
+                if (doIndex == commandList.Count)
                 {
                     return;
                 }
-                commandList[index].DoAll();
-                if (commandList[index].Done)
-                {
-                    index++;
-                }
+                commandList[doIndex].DoAll();
+                undoIndex = doIndex;
+                //if (commandList[index].Done)
+                //{
+                doIndex++;
+                //}
             }
         }
 
+        // undo the last command (undo all contained command if it's not simple)
         public void UndoAll()
         {
             if (commandList.Count > 0)
             {
-                if (index <= 0)
+                if (undoIndex < 0)
                 {
                     return;
                 }
-                commandList[index - 1].UndoAll();
-                if (commandList[index - 1].Undone)
-                {
-                    index--;
-                }
+                commandList[undoIndex].UndoAll();
+                doIndex = undoIndex;
+                //if (commandList[undoIndex].Undone)
+                //{
+                undoIndex--;
+                //}
             }
         }
 

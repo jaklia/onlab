@@ -16,11 +16,13 @@ namespace Robot.Commands
         public override void Do()
         {
             itemId = gameRef.PickUpItem();
+            _done = true;
         }
 
         public override void Undo()
         {
-            gameRef.DropItem(itemId); 
+            gameRef.DropItem(itemId);
+            _done = false;
         }
     }
 }
