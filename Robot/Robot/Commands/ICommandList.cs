@@ -8,8 +8,14 @@ namespace Robot.Commands
 {
     public interface ICommandList
     {
-        CommandBase nextCmd();
+        //CommandBase nextCmd();
+        //CommandBase prevCmd();
 
-        CommandBase prevCmd();
+        //public delegate void ListContextChanged();
+
+        event Action<CommandList> ListContextEntered;
+
+        event Action<CommandList> ListContextExited;
+
     }
 }

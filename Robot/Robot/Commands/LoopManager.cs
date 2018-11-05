@@ -86,25 +86,25 @@ namespace Robot.Commands
             index = 0;
         }
 
-        public CommandBase getNext()
-        {
-            if (commands[index] is ICommandList)
-            {
-                return ((ICommandList)commands[index]).nextCmd();
-            } else {
-                return null;
-            }
-        }
+        //public CommandBase getNext()
+        //{
+        //    if (commands[index] is ICommandList)
+        //    {
+        //        return ((ICommandList)commands[index]).nextCmd();
+        //    } else {
+        //        return null;
+        //    }
+        //}
 
-        public CommandBase getPrev()
-        {
-            if (commands[index - 1] is ICommandList)
-            {
-                return ((ICommandList)commands[index]).prevCmd();
-            } else {
-                return null;
-            }
-        }
+        //public CommandBase getPrev()
+        //{
+        //    if (commands[index - 1] is ICommandList)
+        //    {
+        //        return ((ICommandList)commands[index]).prevCmd();
+        //    } else {
+        //        return null;
+        //    }
+        //}
 
         public bool AllDone()
         {

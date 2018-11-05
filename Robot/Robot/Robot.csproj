@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\CommandList.cs" />
     <Compile Include="Commands\CommandManager.cs" />
     <Compile Include="Commands\DropCommand.cs" />
     <Compile Include="Commands\FunctionCommand.cs" />

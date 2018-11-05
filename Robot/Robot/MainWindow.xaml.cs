@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
+using Robot.Commands;
 
 namespace Robot
 {
@@ -41,7 +43,7 @@ namespace Robot
         void InitGame()
         {
             game = new Game(10, 10);
-            cmdManager = new Commands.CommandManager();
+            //cmdManager = new Commands.CommandManager(); // eznemkellitt
             game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
@@ -72,12 +74,14 @@ namespace Robot
             treeView.Items.Add(tree);
 
             game = startingState.Clone();
-            cmdManager.Reset();
 
             // build cmd list
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
+            List<CommandBase> commands = new List<CommandBase>();
+            //RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, commands);
             robotControllerVisitor.VisitProgram(ctx);
             DrawGame(game);
+            cmdManager = new Commands.CommandManager(commands);
 
             StartButton.IsEnabled = true;
             DoCmdBtn.IsEnabled = true;

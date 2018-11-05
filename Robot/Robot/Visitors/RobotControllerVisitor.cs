@@ -9,7 +9,8 @@ namespace Robot.Visitors
     class RobotControllerVisitor : RobotGrammarBaseVisitor<object>
     {
         Game Game;
-        CommandManager cmdManager;
+        //CommandManager cmdManager;
+        List<CommandBase> commands;
         Dictionary<string, List<CommandBase>> declaredFunctions;
         // szimbólumtáblák a fordprog tárgynál
 
@@ -19,10 +20,11 @@ namespace Robot.Visitors
         // hibakezelés: errornode-n kívül milyen hibák
         // megjelenített ast szépítése
 
-        public RobotControllerVisitor(Game game, CommandManager cmdManager)
+        public RobotControllerVisitor(Game game, List<CommandBase> commands /*CommandManager cmdManager*/)
         {
             Game = game;
-            this.cmdManager = cmdManager;
+            //this.cmdManager = cmdManager;
+            this.commands = commands;
             declaredFunctions = new Dictionary<string, List<CommandBase>>();
         }
 
@@ -31,7 +33,8 @@ namespace Robot.Visitors
             VisitFunctionDefinitions(context.functionDefinitions());
             foreach (var instruction in context.instructionSet().instruction())
             {
-                cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
+                //cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
+                commands.Add((CommandBase)VisitInstruction(instruction));
             }
 
             //VisitInstructionSet(context.instructionSet());

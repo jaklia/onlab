@@ -1,93 +1,98 @@
-﻿using Robot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Robot.Commands
 {
     class CommandManager
     {
-        private List<CommandBase> commandList;
+
+        private Stack<CommandList> contextStack;
+
+        private CommandList currentCommandList { get { return contextStack?.Peek(); } }
+        private CommandList progCmdList;
+
+        private List<CommandBase> _cmdList;
         private int doIndex;
         private int undoIndex;
 
         private CommandBase nextCmd { get;  set; }
 
-        public CommandManager()
+        public CommandManager(List<CommandBase> commands)
         {
             //Reset();
-            commandList = new List<CommandBase>();
+            //_cmdList = new List<CommandBase>();
+            _cmdList = commands;
+            contextStack = new Stack<CommandList>();
+            progCmdList = new CommandList(commands);
+            contextStack.Push(progCmdList);
             doIndex = 0;
             undoIndex = -1;
         }
 
-        public void Reset()
-        {
-            commandList = new List<CommandBase>();
-            doIndex = 0;
-            undoIndex = -1;
-        }
+        //public void Reset()
+        //{
+        //    _cmdList = new List<CommandBase>();
+        //    doIndex = 0;
+        //    undoIndex = -1;
+        //}
 
         // run the next command (run step by step if it's not a simple command)
         public void DoCommand()
         {
-            if (commandList.Count > 0)
+            //currentCommandList.Do();
+            if (_cmdList.Count > 0)
             {
-                if (doIndex == commandList.Count)
+                if (doIndex == _cmdList.Count)
                 {
                     return;
                 }
-                commandList[doIndex].Do();
+                _cmdList[doIndex].Do();
                 undoIndex = doIndex;
-                if (commandList[doIndex].Done)
+                if (_cmdList[doIndex].Done)
                 {
-                    //undoIndex = doIndex;
                     doIndex++;
-                } /*else if (!commandList[doIndex].Done && !commandList[doIndex].Undone)
-                {
-
-                }*/
+                }
             }
         }
 
         // undo the last command (step by step if it's not a simple command)
         public void UndoCommand()
         {
-            if (commandList.Count > 0)
+            //currentCommandList.Undo();
+            if (_cmdList.Count > 0)
             {
                 if (undoIndex < 0)
                 {
                     return;
                 }
-                commandList[undoIndex].Undo();
+                _cmdList[undoIndex].Undo();
                 doIndex = undoIndex;
-                if (commandList[undoIndex].Undone)
+                if (_cmdList[undoIndex].Undone)
                 {
                     undoIndex--;
                 }
             }
         }
-        
+
         //  run the whole program (starting after the last executed command)
         public void RunProg()  
         {
-            while (doIndex < commandList.Count)
+            //progCmdList.DoAll();
+            while (doIndex < _cmdList.Count)
             {
-                commandList[doIndex].DoAll();
+                _cmdList[doIndex].DoAll();
                 doIndex++;
             }
             undoIndex = doIndex - 1;
-            
+
         }
 
         // undo the whole program (starting with the last executed command)
         public void UndoProg() 
         {
+            //progCmdList.UndoAll();
             while (undoIndex >= 0)
             {
-                commandList[undoIndex].UndoAll();
+                _cmdList[undoIndex].UndoAll();
                 undoIndex--;
             }
             doIndex = undoIndex + 1;
@@ -96,13 +101,14 @@ namespace Robot.Commands
         // run the next command (run all contained commands if it's not simple)
         public void DoAll ()
         {
-            if (commandList.Count > 0)
+            //currentCommandList.DoAll();
+            if (_cmdList.Count > 0)
             {
-                if (doIndex == commandList.Count)
+                if (doIndex == _cmdList.Count)
                 {
                     return;
                 }
-                commandList[doIndex].DoAll();
+                _cmdList[doIndex].DoAll();
                 undoIndex = doIndex;
                 //if (commandList[index].Done)
                 //{
@@ -114,13 +120,14 @@ namespace Robot.Commands
         // undo the last command (undo all contained command if it's not simple)
         public void UndoAll()
         {
-            if (commandList.Count > 0)
+            //currentCommandList.UndoAll();
+            if (_cmdList.Count > 0)
             {
                 if (undoIndex < 0)
                 {
                     return;
                 }
-                commandList[undoIndex].UndoAll();
+                _cmdList[undoIndex].UndoAll();
                 doIndex = undoIndex;
                 //if (commandList[undoIndex].Undone)
                 //{
@@ -131,18 +138,18 @@ namespace Robot.Commands
 
         public void AddCommand(CommandBase cmd)
         {
-            commandList.Add(cmd);
+            _cmdList.Add(cmd);
 
-            if (commandList.Count == 1)
-            {
-                if (commandList[0] is ICommandList)
-                {
-                    nextCmd = ((ICommandList)commandList[0]).nextCmd();
-                } else
-                {
-                    nextCmd = commandList[0];
-                }
-            }
+            //if (commandList.Count == 1)
+            //{
+            //    if (commandList[0] is ICommandList)
+            //    {
+            //        nextCmd = ((ICommandList)commandList[0]).nextCmd();
+            //    } else
+            //    {
+            //        nextCmd = commandList[0];
+            //    }
+            //}
         }
 
     }
