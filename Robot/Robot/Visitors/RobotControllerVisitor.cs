@@ -112,6 +112,8 @@ namespace Robot.Visitors
         {
             string name = context.functionName().GetText();
             FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
+            ((ICommandList)functionCmd).ListContextEntered += onEnterContext;
+            ((ICommandList)functionCmd).ListContextExited += onExitContext;
             return functionCmd;
         }
 

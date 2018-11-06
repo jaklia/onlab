@@ -81,7 +81,7 @@
   <Class Name="Robot.Commands.FunctionCommand">
     <Position X="3.75" Y="6" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AABACAAAAgIAJAAAAAAAAAAACAABCAAAAAAAAQAAAAA=</HashCode>
+      <HashCode>CABACAAAAAAAJAAAAAAAAAAACAABCAAAAAAAAQAAAAA=</HashCode>
       <FileName>Commands\FunctionCommand.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
