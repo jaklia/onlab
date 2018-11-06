@@ -36,10 +36,10 @@ namespace Robot.Commands
             commands[doIndex].Do();
             undoIteration = doIteration;
             undoIndex = doIndex;
-            if (commands[doIndex].Done)
-            {
-                doIndex++;
-            }
+            //if (commands[doIndex].Done)
+            //{
+            doIndex++;
+            //}
         }
 
         public void Undo()
@@ -56,18 +56,14 @@ namespace Robot.Commands
             commands[undoIndex].Undo();
             doIteration = undoIteration;
             doIndex = undoIndex;
-            if (commands[undoIndex].Undone)
-            {
-                undoIndex--;
-            }
+            //if (commands[undoIndex].Undone)
+            //{
+            undoIndex--;
+            //}
         }
 
         public void DoAll()
         {
-            //while(iteration < repeatCnt || index != commands.Count)
-            //{
-            //    Do();
-            //}
             for (; doIteration <= repeatCnt; doIteration++)
             {
                 for (; doIndex < commands.Count; doIndex++)
@@ -84,10 +80,6 @@ namespace Robot.Commands
 
         public void UndoAll()
         {
-            //while (iteration > 1 || index > 0)
-            //{
-            //    Undo();
-            //}
             for (; undoIteration > 0; undoIteration--)
             {
                 for (; undoIndex >= 0; undoIndex--)

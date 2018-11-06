@@ -7,19 +7,19 @@ namespace Robot.Commands
         public abstract bool Done { get;  }
         public abstract bool Undone { get;  }
 
-        public delegate void Completed();
-        public event Completed DoAllCompleted;
-        public event Completed UndoAllCompleted;
+        //public delegate void Completed();
+        //public event Completed DoAllCompleted;
+        //public event Completed UndoAllCompleted;
 
-        protected void OnDoAllCompleted()
-        {
-            DoAllCompleted?.Invoke();
-        }
+        //protected void OnDoAllCompleted()
+        //{
+        //    DoAllCompleted?.Invoke();
+        //}
 
-        protected void OnUndoAllCompleted()
-        {
-            UndoAllCompleted?.Invoke();
-        }
+        //protected void OnUndoAllCompleted()
+        //{
+        //    UndoAllCompleted?.Invoke();
+        //}
 
         public abstract void Do();
 

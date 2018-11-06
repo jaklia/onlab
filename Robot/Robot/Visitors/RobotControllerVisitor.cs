@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Antlr4.Runtime.Misc;
 using Robot.Model;
 using Robot.Commands;
+using System;
 
 namespace Robot.Visitors
 {
@@ -10,8 +11,10 @@ namespace Robot.Visitors
     {
         Game Game;
         //CommandManager cmdManager;
-        List<CommandBase> commands;
+       // List<CommandBase> commands;
         Dictionary<string, List<CommandBase>> declaredFunctions;
+        Action<CommandList> onEnterContext;
+        Action<CommandList> onExitContext;
         // szimbólumtáblák a fordprog tárgynál
 
         //  fv / loop  lépésenként
@@ -20,17 +23,20 @@ namespace Robot.Visitors
         // hibakezelés: errornode-n kívül milyen hibák
         // megjelenített ast szépítése
 
-        public RobotControllerVisitor(Game game, List<CommandBase> commands /*CommandManager cmdManager*/)
+        public RobotControllerVisitor(Game game, Action<CommandList> onEnterContext, Action<CommandList> onExitContext /*CommandManager cmdManager*/)
         {
             Game = game;
             //this.cmdManager = cmdManager;
-            this.commands = commands;
+            
             declaredFunctions = new Dictionary<string, List<CommandBase>>();
+            this.onEnterContext = onEnterContext;
+            this.onExitContext = onExitContext;
         }
 
         public override object VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
         {
             VisitFunctionDefinitions(context.functionDefinitions());
+            List<CommandBase> commands = new List<CommandBase>();
             foreach (var instruction in context.instructionSet().instruction())
             {
                 //cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
@@ -38,7 +44,7 @@ namespace Robot.Visitors
             }
 
             //VisitInstructionSet(context.instructionSet());
-            return 0;
+            return commands;
         }
 
         public override object VisitInstructionSet([NotNull] RobotGrammarParser.InstructionSetContext context)
@@ -88,6 +94,8 @@ namespace Robot.Visitors
                 cmdList.Add((CommandBase)VisitInstruction(instruction));
             }
             LoopCommand loopCmd = new LoopCommand(Game, cnt, cmdList);
+            ((ICommandList)loopCmd).ListContextEntered += onEnterContext;
+            ((ICommandList)loopCmd).ListContextExited += onExitContext;
             return loopCmd;
         }
 

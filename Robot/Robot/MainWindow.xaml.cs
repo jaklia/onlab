@@ -36,10 +36,7 @@ namespace Robot
             }
             InitGame();
         }
-        // TODO :
-        // (error)
-        // (material design)
-        // (treeview)
+       
         void InitGame()
         {
             game = new Game(10, 10);
@@ -76,12 +73,12 @@ namespace Robot
             game = startingState.Clone();
 
             // build cmd list
-            List<CommandBase> commands = new List<CommandBase>();
+         //   List<CommandBase> commands = new List<CommandBase>();
             //RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, commands);
-            robotControllerVisitor.VisitProgram(ctx);
+         //   RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, commands);
+         //   robotControllerVisitor.VisitProgram(ctx);
             DrawGame(game);
-            cmdManager = new Commands.CommandManager(commands);
+            cmdManager = new Commands.CommandManager(game, ctx);
 
             StartButton.IsEnabled = true;
             DoCmdBtn.IsEnabled = true;

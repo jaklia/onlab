@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Robot.Grammar;
+using Robot.Model;
+using Robot.Visitors;
+using System.Collections.Generic;
 
 namespace Robot.Commands
 {
@@ -16,12 +19,21 @@ namespace Robot.Commands
 
         private CommandBase nextCmd { get;  set; }
 
-        public CommandManager(List<CommandBase> commands)
+        public CommandManager(Game game, RobotGrammarParser.ProgramContext ctx)
         {
             //Reset();
             //_cmdList = new List<CommandBase>();
-            _cmdList = commands;
+
             contextStack = new Stack<CommandList>();
+
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, 
+                (CommandList cmdList)=> {
+                    contextStack.Push(cmdList);
+                },
+                (CommandList cmdList) => contextStack.Pop());
+            List<CommandBase> commands = (List<CommandBase>)robotControllerVisitor.VisitProgram(ctx);
+
+            _cmdList = commands;
             progCmdList = new CommandList(commands);
             contextStack.Push(progCmdList);
             doIndex = 0;
@@ -38,102 +50,134 @@ namespace Robot.Commands
         // run the next command (run step by step if it's not a simple command)
         public void DoCommand()
         {
-            //currentCommandList.Do();
-            if (_cmdList.Count > 0)
+            if (currentCommandList.AllDone() && contextStack.Count > 1)
             {
-                if (doIndex == _cmdList.Count)
-                {
-                    return;
-                }
-                _cmdList[doIndex].Do();
-                undoIndex = doIndex;
-                if (_cmdList[doIndex].Done)
-                {
-                    doIndex++;
-                }
+                contextStack.Pop();
             }
+            currentCommandList.Do();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (doIndex == _cmdList.Count)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[doIndex].Do();
+            //    undoIndex = doIndex;
+            //    if (_cmdList[doIndex].Done)
+            //    {
+            //        doIndex++;
+            //    }
+            //}
         }
 
         // undo the last command (step by step if it's not a simple command)
         public void UndoCommand()
         {
-            //currentCommandList.Undo();
-            if (_cmdList.Count > 0)
+            if (currentCommandList.AllUndone() && contextStack.Count > 1)
             {
-                if (undoIndex < 0)
-                {
-                    return;
-                }
-                _cmdList[undoIndex].Undo();
-                doIndex = undoIndex;
-                if (_cmdList[undoIndex].Undone)
-                {
-                    undoIndex--;
-                }
+                contextStack.Pop();
             }
+            currentCommandList.Undo();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (undoIndex < 0)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[undoIndex].Undo();
+            //    doIndex = undoIndex;
+            //    if (_cmdList[undoIndex].Undone)
+            //    {
+            //        undoIndex--;
+            //    }
+            //}
         }
 
         //  run the whole program (starting after the last executed command)
         public void RunProg()  
         {
-            //progCmdList.DoAll();
-            while (doIndex < _cmdList.Count)
+            while (contextStack.Count > 1)
             {
-                _cmdList[doIndex].DoAll();
-                doIndex++;
+                currentCommandList.DoAll();
+                if (currentCommandList.AllDone())
+                {
+                    contextStack.Pop();
+                }
             }
-            undoIndex = doIndex - 1;
+            progCmdList.DoAll();
+            //while (doIndex < _cmdList.Count)
+            //{
+            //    _cmdList[doIndex].DoAll();
+            //    doIndex++;
+            //}
+            //undoIndex = doIndex - 1;
 
         }
 
         // undo the whole program (starting with the last executed command)
         public void UndoProg() 
         {
-            //progCmdList.UndoAll();
-            while (undoIndex >= 0)
+            while (contextStack.Count > 1)
             {
-                _cmdList[undoIndex].UndoAll();
-                undoIndex--;
+                currentCommandList.UndoAll();
+                if (currentCommandList.AllUndone())
+                {
+                    contextStack.Pop();
+                }
             }
-            doIndex = undoIndex + 1;
+            progCmdList.UndoAll();
+            //while (undoIndex >= 0)
+            //{
+            //    _cmdList[undoIndex].UndoAll();
+            //    undoIndex--;
+            //}
+            //doIndex = undoIndex + 1;
         }
 
         // run the next command (run all contained commands if it's not simple)
         public void DoAll ()
         {
-            //currentCommandList.DoAll();
-            if (_cmdList.Count > 0)
+            if (currentCommandList.AllDone() && contextStack.Count > 1)
             {
-                if (doIndex == _cmdList.Count)
-                {
-                    return;
-                }
-                _cmdList[doIndex].DoAll();
-                undoIndex = doIndex;
-                //if (commandList[index].Done)
-                //{
-                doIndex++;
-                //}
+                contextStack.Pop();
             }
+            currentCommandList.DoAll();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (doIndex == _cmdList.Count)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[doIndex].DoAll();
+            //    undoIndex = doIndex;
+            //    //if (commandList[index].Done)
+            //    //{
+            //    doIndex++;
+            //    //}
+            //}
         }
 
         // undo the last command (undo all contained command if it's not simple)
         public void UndoAll()
         {
-            //currentCommandList.UndoAll();
-            if (_cmdList.Count > 0)
+            if (currentCommandList.AllUndone() && contextStack.Count > 1)
             {
-                if (undoIndex < 0)
-                {
-                    return;
-                }
-                _cmdList[undoIndex].UndoAll();
-                doIndex = undoIndex;
-                //if (commandList[undoIndex].Undone)
-                //{
-                undoIndex--;
-                //}
+                contextStack.Pop();
             }
+            currentCommandList.UndoAll();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (undoIndex < 0)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[undoIndex].UndoAll();
+            //    doIndex = undoIndex;
+            //    //if (commandList[undoIndex].Undone)
+            //    //{
+            //    undoIndex--;
+            //    //}
+            //}
         }
 
         public void AddCommand(CommandBase cmd)

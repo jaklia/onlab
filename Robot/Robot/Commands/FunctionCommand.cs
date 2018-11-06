@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    public class FunctionCommand : CommandBase
+    public class FunctionCommand : CommandBase, ICommandList
     {
         private List<CommandBase> commands;
         private Game gameRef;
@@ -33,6 +33,9 @@ namespace Robot.Commands
                 throw new NotImplementedException();
             }
         }
+
+        public event Action<CommandList> ListContextEntered;
+        public event Action<CommandList> ListContextExited;
 
         public override void Do()
         {

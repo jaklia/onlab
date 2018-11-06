@@ -138,6 +138,7 @@
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>Robot.Grammar</CustomToolNamespace>
     </Antlr4>
+    <None Include="ClassDiagram2.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

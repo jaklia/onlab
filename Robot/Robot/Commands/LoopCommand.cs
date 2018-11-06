@@ -13,7 +13,7 @@ namespace Robot.Commands
         private CommandList loopManager;
         
         public event Action<CommandList> ListContextEntered;
-        public event Action<CommandList> ListContextExited;
+        public event Action<CommandList> ListContextExited;  // ez valszeg nem kell itt
 
         //private LoopManager loopManager;
 
@@ -31,22 +31,28 @@ namespace Robot.Commands
 
         public override void Do()
         {
+            ListContextEntered?.Invoke(loopManager);
             loopManager.Do();
         }
 
         public override void Undo()
         {
+            ListContextEntered?.Invoke(loopManager);
             loopManager.Undo();
         }
 
         public override void DoAll()
         {
+            ListContextEntered?.Invoke(loopManager);
             loopManager.DoAll();
+            ListContextExited?.Invoke(loopManager);
         }
 
         public override void UndoAll()
         {
+            ListContextEntered?.Invoke(loopManager);
             loopManager.UndoAll();
+            ListContextExited?.Invoke(loopManager);
         }
 
         //public CommandBase nextCmd()
