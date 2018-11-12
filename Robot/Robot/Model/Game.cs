@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Robot.Model
 {
     public class Game  // deep copy
@@ -14,7 +9,7 @@ namespace Robot.Model
         public Game (int boardWith, int boardHeight)
         {
             Board = new Board(boardWith, boardHeight);
-            Player = new Robot(Board, Robot.MoveDir.RIGHT);
+            Player = new Robot(Board, MoveDir.RIGHT);
             //Board.Init1();
         }
 
@@ -30,7 +25,7 @@ namespace Robot.Model
             return Player.Move(moveAmount);
         }
 
-        public void TurnRobot (Robot.TurnDir turnDir)
+        public void TurnRobot (TurnDir turnDir)
         {
             Player.Turn(turnDir);
         }

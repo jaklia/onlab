@@ -1,13 +1,8 @@
 ﻿using Robot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    class MoveCommand : CommandBase
+    class MoveCommand : SimpleCommand
     {
         private Game gameRef;
 
@@ -24,13 +19,15 @@ namespace Robot.Commands
         public override void Do()
         {
             steps = gameRef.MoveRobot(totalAmount);
+            _done = true;
         }
 
         public override void Undo()
         {
-            gameRef.TurnRobot(Model.Robot.TurnDir.BACK);
+            gameRef.TurnRobot(TurnDir.BACK);
             gameRef.MoveRobot(steps);
-            gameRef.TurnRobot(Model.Robot.TurnDir.BACK);
+            gameRef.TurnRobot(TurnDir.BACK);
+            _done = false;
         }
     }
 }

@@ -1,91 +1,199 @@
-﻿using Robot.Model;
-using System;
+﻿using Robot.Grammar;
+using Robot.Model;
+using Robot.Visitors;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
     class CommandManager
     {
-        private List<CommandBase> commandList;
-        private int lastExecuted;
 
-        public CommandManager()
+        private Stack<CommandList> contextStack;
+
+        private CommandList currentCommandList { get { return contextStack?.Peek(); } }
+        private CommandList progCmdList;
+
+        private List<CommandBase> _cmdList;
+        private int doIndex;
+        private int undoIndex;
+
+        private CommandBase nextCmd { get;  set; }
+
+        public CommandManager(Game game, RobotGrammarParser.ProgramContext ctx)
         {
-            Reset();
+            //Reset();
+            //_cmdList = new List<CommandBase>();
+
+            contextStack = new Stack<CommandList>();
+
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, 
+                (CommandList cmdList)=> {
+                    contextStack.Push(cmdList);
+                },
+                (CommandList cmdList) => contextStack.Pop());
+            List<CommandBase> commands = (List<CommandBase>)robotControllerVisitor.VisitProgram(ctx);
+
+            _cmdList = commands;
+            progCmdList = new CommandList(commands);
+            contextStack.Push(progCmdList);
+            doIndex = 0;
+            undoIndex = -1;
         }
 
-        public void Reset()
-        {
-            commandList = new List<CommandBase>();
-            lastExecuted = -1;
-        }
+        //public void Reset()
+        //{
+        //    _cmdList = new List<CommandBase>();
+        //    doIndex = 0;
+        //    undoIndex = -1;
+        //}
 
-        public bool DoCommand()
+        // run the next command (run step by step if it's not a simple command)
+        public void DoCommand()
         {
-            //System.Windows.MessageBox.Show(lastExecuted.ToString());
-            if (commandList.Count > 0)
+            if (currentCommandList.AllDone() && contextStack.Count > 1)
             {
-                if (lastExecuted == commandList.Count - 1)
-                {
-                    // all commands are executed
-                    // TODO: disable the |>| btn
-                    return false;
-                }
-                lastExecuted++;
-                commandList[lastExecuted].Do();
-                return true;
+                contextStack.Pop();
             }
-            // else: no cmds to execute
-            return false;
+            currentCommandList.Do();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (doIndex == _cmdList.Count)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[doIndex].Do();
+            //    undoIndex = doIndex;
+            //    if (_cmdList[doIndex].Done)
+            //    {
+            //        doIndex++;
+            //    }
+            //}
         }
 
-        public bool UndoCommand()
+        // undo the last command (step by step if it's not a simple command)
+        public void UndoCommand()
         {
-            if (commandList.Count > 0)
+            if (currentCommandList.AllUndone() && contextStack.Count > 1)
             {
-                if (lastExecuted < 0)
-                {
-                    // all command are undone
-                    // TODO: disable the |<| btn
-                    return false;
-                }
-                commandList[lastExecuted].Undo();
-                lastExecuted--;
-                return true;
+                contextStack.Pop();
             }
-            return false;
+            currentCommandList.Undo();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (undoIndex < 0)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[undoIndex].Undo();
+            //    doIndex = undoIndex;
+            //    if (_cmdList[undoIndex].Undone)
+            //    {
+            //        undoIndex--;
+            //    }
+            //}
         }
 
-        public void DoAll()  /// start btn
+        //  run the whole program (starting after the last executed command)
+        public void RunProg()  
         {
-            if (commandList.Count > 0)
+            while (contextStack.Count > 1)
             {
-                while (lastExecuted < commandList.Count - 1)
+                currentCommandList.DoAll();
+                if (currentCommandList.AllDone())
                 {
-                    lastExecuted++;
-                    commandList[lastExecuted].Do();
+                    contextStack.Pop();
                 }
             }
+            progCmdList.DoAll();
+            //while (doIndex < _cmdList.Count)
+            //{
+            //    _cmdList[doIndex].DoAll();
+            //    doIndex++;
+            //}
+            //undoIndex = doIndex - 1;
+
         }
 
-        public void UndoAll() // reset btn
+        // undo the whole program (starting with the last executed command)
+        public void UndoProg() 
         {
-            if (commandList.Count > 0)
+            while (contextStack.Count > 1)
             {
-                while(lastExecuted >= 0)
+                currentCommandList.UndoAll();
+                if (currentCommandList.AllUndone())
                 {
-                    commandList[lastExecuted].Undo();
-                    lastExecuted--;
+                    contextStack.Pop();
                 }
             }
+            progCmdList.UndoAll();
+            //while (undoIndex >= 0)
+            //{
+            //    _cmdList[undoIndex].UndoAll();
+            //    undoIndex--;
+            //}
+            //doIndex = undoIndex + 1;
+        }
+
+        // run the next command (run all contained commands if it's not simple)
+        public void DoAll ()
+        {
+            if (currentCommandList.AllDone() && contextStack.Count > 1)
+            {
+                contextStack.Pop();
+            }
+            currentCommandList.DoAll();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (doIndex == _cmdList.Count)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[doIndex].DoAll();
+            //    undoIndex = doIndex;
+            //    //if (commandList[index].Done)
+            //    //{
+            //    doIndex++;
+            //    //}
+            //}
+        }
+
+        // undo the last command (undo all contained command if it's not simple)
+        public void UndoAll()
+        {
+            if (currentCommandList.AllUndone() && contextStack.Count > 1)
+            {
+                contextStack.Pop();
+            }
+            currentCommandList.UndoAll();
+            //if (_cmdList.Count > 0)
+            //{
+            //    if (undoIndex < 0)
+            //    {
+            //        return;
+            //    }
+            //    _cmdList[undoIndex].UndoAll();
+            //    doIndex = undoIndex;
+            //    //if (commandList[undoIndex].Undone)
+            //    //{
+            //    undoIndex--;
+            //    //}
+            //}
         }
 
         public void AddCommand(CommandBase cmd)
         {
-            commandList.Add(cmd);
+            _cmdList.Add(cmd);
+
+            //if (commandList.Count == 1)
+            //{
+            //    if (commandList[0] is ICommandList)
+            //    {
+            //        nextCmd = ((ICommandList)commandList[0]).nextCmd();
+            //    } else
+            //    {
+            //        nextCmd = commandList[0];
+            //    }
+            //}
         }
 
     }

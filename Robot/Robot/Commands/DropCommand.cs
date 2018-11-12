@@ -1,13 +1,8 @@
 ﻿using Robot.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    class DropCommand : CommandBase
+    class DropCommand : SimpleCommand
     {
 
         private Game gameRef;
@@ -22,11 +17,13 @@ namespace Robot.Commands
         public override void Do()
         {
             gameRef.DropItem(itemId);
+            _done = true;
         }
 
         public override void Undo()
         {
             itemId = gameRef.PickUpItem();
+            _done = false;
         }
     }
 }

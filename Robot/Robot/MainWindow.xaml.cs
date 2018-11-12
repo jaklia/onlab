@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Collections.Generic;
+using Robot.Commands;
 
 namespace Robot
 {
@@ -34,20 +36,19 @@ namespace Robot
             }
             InitGame();
         }
-        // TODO :
-        // (error)
-        // (material design)
-        // (treeview)
+       
         void InitGame()
         {
             game = new Game(10, 10);
-            cmdManager = new Commands.CommandManager();
+            //cmdManager = new Commands.CommandManager(); // eznemkellitt
             game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
             DoCmdBtn.IsEnabled = false;
             UndoCmdBtn.IsEnabled = false;
+            DoAllBtn.IsEnabled = false;
+            UndoAllBtn.IsEnabled = false;
             textBox.Text = "";
         }
 
@@ -70,42 +71,46 @@ namespace Robot
             treeView.Items.Add(tree);
 
             game = startingState.Clone();
-            cmdManager.Reset();
 
             // build cmd list
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
-            robotControllerVisitor.VisitProgram(ctx);
+         //   List<CommandBase> commands = new List<CommandBase>();
+            //RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
+         //   RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, commands);
+         //   robotControllerVisitor.VisitProgram(ctx);
             DrawGame(game);
+            cmdManager = new Commands.CommandManager(game, ctx);
 
             StartButton.IsEnabled = true;
             DoCmdBtn.IsEnabled = true;
             UndoCmdBtn.IsEnabled = true;
+            DoAllBtn.IsEnabled = true;
+            UndoAllBtn.IsEnabled = true;
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
-            robotControllerVisitor.VisitProgram(ctx);
+            cmdManager.RunProg();
             DrawGame(game);
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            ResetGame();
+            cmdManager.UndoProg();
+            DrawGame(game);
         }
 
-        void ResetGame()
-        {
-            treeView.Items.Clear();
-            game = startingState.Clone();
-            cmdManager.Reset();
-            textBox.Text = "";
-            StartButton.IsEnabled = false;
-            DoCmdBtn.IsEnabled = false;
-            UndoCmdBtn.IsEnabled = false;
-            DrawGame(game);
-            //InitGame();
-        }
+        //void ResetGame()
+        //{
+        //    treeView.Items.Clear();
+        //    game = startingState.Clone();
+        //    cmdManager.Reset();
+        //    textBox.Text = "";
+        //    StartButton.IsEnabled = false;
+        //    DoCmdBtn.IsEnabled = false;
+        //    UndoCmdBtn.IsEnabled = false;
+        //    DrawGame(game);
+        //    //InitGame();
+        //}
 
         private void DoCmdBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -117,6 +122,21 @@ namespace Robot
         {
             cmdManager.UndoCommand();
             DrawGame(game);
+        }
+
+        private void UndoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // enable only if we are in a loop / function
+            cmdManager.UndoAll();
+            DrawGame(game);
+        }
+
+        private void DoAllBtn_Click(object sender, RoutedEventArgs e)
+        {
+            // enable only if we are in a loop / function
+            cmdManager.DoAll();
+            DrawGame(game);
+            
         }
 
         void DrawGame(Game game)
@@ -158,16 +178,16 @@ namespace Robot
             Grid.SetRow(RobotImg, game.Player.Row);
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */
             {
-                case Model.Robot.MoveDir.UP:
+                case MoveDir.UP:
                     RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
                     break;
-                case Model.Robot.MoveDir.RIGHT:
+                case MoveDir.RIGHT:
                     RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
                     break;
-                case Model.Robot.MoveDir.DOWN:
+                case MoveDir.DOWN:
                     RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
                     break;
-                case Model.Robot.MoveDir.LEFT:
+                case MoveDir.LEFT:
                     RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
                     break;
                 default:
@@ -176,16 +196,5 @@ namespace Robot
             
         }
 
-        private void UndoAllBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cmdManager.UndoAll();
-            DrawGame(game);
-        }
-
-        private void DoAllBtn_Click(object sender, RoutedEventArgs e)
-        {
-            cmdManager.DoAll();
-            DrawGame(game);
-        }
     }
 }

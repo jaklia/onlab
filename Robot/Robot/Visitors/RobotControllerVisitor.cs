@@ -1,48 +1,44 @@
 ﻿using Robot.Grammar;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using System.Windows.Controls;
 using Robot.Model;
-using System.Windows.Media.Imaging;
 using Robot.Commands;
+using System;
 
 namespace Robot.Visitors
 {
     class RobotControllerVisitor : RobotGrammarBaseVisitor<object>
     {
         Game Game;
-        CommandManager cmdManager;
+        //CommandManager cmdManager;
+       // List<CommandBase> commands;
         Dictionary<string, List<CommandBase>> declaredFunctions;
-        // szimbólumtáblák a fordprog tárgynál
+        Action<CommandList> onEnterContext;
+        Action<CommandList> onExitContext;
+        
 
-        //  fv / loop  lépésenként
-        // pályagenerátor  --> menüpont
-        // konstans paraméterek  --> int / dir
-        // hibakezelés: errornode-n kívül milyen hibák
-        // megjelenített ast szépítése
-
-        public RobotControllerVisitor(Game game, CommandManager cmdManager)
+        public RobotControllerVisitor(Game game, Action<CommandList> onEnterContext, Action<CommandList> onExitContext /*CommandManager cmdManager*/)
         {
             Game = game;
-            this.cmdManager = cmdManager;
+            //this.cmdManager = cmdManager;
+            
             declaredFunctions = new Dictionary<string, List<CommandBase>>();
+            this.onEnterContext = onEnterContext;
+            this.onExitContext = onExitContext;
         }
 
         public override object VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
         {
             VisitFunctionDefinitions(context.functionDefinitions());
+            List<CommandBase> commands = new List<CommandBase>();
             foreach (var instruction in context.instructionSet().instruction())
             {
-                cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
+                //cmdManager.AddCommand((CommandBase)VisitInstruction(instruction));
+                commands.Add((CommandBase)VisitInstruction(instruction));
             }
 
             //VisitInstructionSet(context.instructionSet());
-            return 0;
+            return commands;
         }
 
         public override object VisitInstructionSet([NotNull] RobotGrammarParser.InstructionSetContext context)
@@ -92,6 +88,8 @@ namespace Robot.Visitors
                 cmdList.Add((CommandBase)VisitInstruction(instruction));
             }
             LoopCommand loopCmd = new LoopCommand(Game, cnt, cmdList);
+            ((ICommandList)loopCmd).ListContextEntered += onEnterContext;
+            ((ICommandList)loopCmd).ListContextExited += onExitContext;
             return loopCmd;
         }
 
@@ -108,6 +106,8 @@ namespace Robot.Visitors
         {
             string name = context.functionName().GetText();
             FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
+            ((ICommandList)functionCmd).ListContextEntered += onEnterContext;
+            ((ICommandList)functionCmd).ListContextExited += onExitContext;
             return functionCmd;
         }
 
@@ -149,7 +149,7 @@ namespace Robot.Visitors
 
         public override object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
         {
-            Model.Robot.TurnDir dir = (Model.Robot.TurnDir)VisitDir(context.dir());
+            TurnDir dir = (TurnDir)VisitDir(context.dir());
             TurnCommand turnCmd = new TurnCommand(Game, dir);
             
             //cmdManager.AddCommand(new TurnCommand(Game, dir));
@@ -175,12 +175,12 @@ namespace Robot.Visitors
 
         public override object VisitLeftDir([NotNull] RobotGrammarParser.LeftDirContext context)
         {
-            return Model.Robot.TurnDir.LEFT;
+            return TurnDir.LEFT;
         }
 
         public override object VisitRightDir([NotNull] RobotGrammarParser.RightDirContext context)
         {
-            return Model.Robot.TurnDir.RIGHT;
+            return TurnDir.RIGHT;
         }
 
         public override object VisitMoveAmount([NotNull] RobotGrammarParser.MoveAmountContext context)

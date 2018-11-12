@@ -1,46 +1,80 @@
 ﻿using Robot.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Robot.Commands
 {
-    class LoopCommand : CommandBase
+    class LoopCommand : CommandBase , ICommandList
     {
-        private int repeatCnt;
-        private List<CommandBase> commands;
+        //private int repeatCnt;
+        //private List<CommandBase> commands;
+        //private Game gameRef;
 
-        private Game gameRef;
+        private CommandList cmdList;
+        
+        public event Action<CommandList> ListContextEntered;
+        public event Action<CommandList> ListContextExited;  // ez valszeg nem kell itt
+
+        //private LoopManager loopManager;
+
+        public override bool Done { get { return cmdList.AllDone(); } }
+        public override bool Undone { get { return cmdList.AllUndone(); } }
 
         public LoopCommand(Game game, int repeatCnt, List<CommandBase> commands)
         {
-            this.repeatCnt = repeatCnt;
-            this.commands = new List<CommandBase>(commands);
-            this.gameRef = game;
+            //this.repeatCnt = repeatCnt;
+            //this.commands = new List<CommandBase>(commands);
+            //this.gameRef = game;
+            this.cmdList = new CommandList(/*game,*/ commands, repeatCnt);
+            //this.loopManager = new LoopManager(game, repeatCnt, commands);
         }
 
         public override void Do()
         {
-            for (int i=0; i<repeatCnt; i++)
-            {
-                foreach (var cmd in commands)
-                {
-                    cmd.Do();
-                }
-            }
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.Do();
         }
 
         public override void Undo()
         {
-            for (int i=repeatCnt; i>0; i--)
-            {
-                for (int j=commands.Count - 1; j>=0; j--)
-                {
-                    commands[j].Undo();
-                }
-            }
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.Undo();
         }
+
+        public override void DoAll()
+        {
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.DoAll();
+            ListContextExited?.Invoke(cmdList);
+        }
+
+        public override void UndoAll()
+        {
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.UndoAll();
+            ListContextExited?.Invoke(cmdList);
+        }
+
+        public override void InitDone()
+        {
+            cmdList.SetDone();
+        }
+
+        public override void InitUndone()
+        {
+            cmdList.SetUndone();
+        }
+
+        //public CommandBase nextCmd()
+        //{
+        //    return loopManager.getNext();
+        //}
+
+        //public CommandBase prevCmd()
+        //{
+        //    return loopManager.getPrev();
+        //}
+
+
     }
 }

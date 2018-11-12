@@ -1,37 +1,63 @@
 ﻿using Robot.Model;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Robot.Commands
 {
-    class FunctionCommand : CommandBase
+    public class FunctionCommand : CommandBase, ICommandList
     {
-        private List<CommandBase> commands;
-        private Game gameRef;
+        //private List<CommandBase> commands;
+        //private Game gameRef;
+
+        private CommandList cmdList;
+
+        public event Action<CommandList> ListContextEntered;
+        public event Action<CommandList> ListContextExited;
+
+        public override bool Done { get { return cmdList.AllDone(); } }
+        public override bool Undone { get { return cmdList.AllUndone(); } }
 
         public FunctionCommand(Game game, List<CommandBase> commands)
         {
-            gameRef = game;
-            this.commands = new List<CommandBase>(commands);
+            //gameRef = game;
+            //this.commands = new List<CommandBase>(commands);
+            cmdList = new CommandList(commands);
         }
 
         public override void Do()
         {
-            foreach (var cmd in commands)
-            {
-                cmd.Do();
-            }
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.Do();
         }
 
         public override void Undo()
         {
-            for (int i=commands.Count-1; i>=0; i--)
-            {
-                commands[i].Undo();
-            }
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.Undo();
+        }
+
+        public override void DoAll()
+        {
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.DoAll();
+            ListContextExited?.Invoke(cmdList);
+        }
+        
+        public override void UndoAll()
+        {
+            ListContextEntered?.Invoke(cmdList);
+            cmdList.UndoAll();
+            ListContextExited?.Invoke(cmdList);
+        }
+
+        public override void InitDone()
+        {
+            cmdList.SetDone();
+        }
+
+        public override void InitUndone()
+        {
+            cmdList.SetUndone();
         }
     }
 }
