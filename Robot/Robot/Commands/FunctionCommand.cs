@@ -49,6 +49,15 @@ namespace Robot.Commands
             cmdList.UndoAll();
             ListContextExited?.Invoke(cmdList);
         }
-        
+
+        public override void InitDone()
+        {
+            cmdList.SetDone();
+        }
+
+        public override void InitUndone()
+        {
+            cmdList.SetUndone();
+        }
     }
 }

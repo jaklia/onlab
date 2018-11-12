@@ -25,11 +25,11 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Robot.Commands.CommandList">
-    <Position X="3.25" Y="0.5" Width="1.5" />
+    <Position X="3.25" Y="0.5" Width="1.75" />
     <AssociationLine Name="commands" Type="Robot.Commands.CommandBase" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="4.5" Y="0.5" />
-        <Point X="4.5" Y="0.125" />
+        <Point X="4.708" Y="0.5" />
+        <Point X="4.708" Y="0.125" />
         <Point X="6.25" Y="0.125" />
         <Point X="6.25" Y="0.5" />
       </Path>
@@ -48,8 +48,8 @@
       <Path>
         <Point X="2.188" Y="0.5" />
         <Point X="2.188" Y="0.125" />
-        <Point X="3.688" Y="0.125" />
-        <Point X="3.688" Y="0.5" />
+        <Point X="3.761" Y="0.125" />
+        <Point X="3.761" Y="0.5" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
         <Position X="0.11" Y="0.06" Height="0.182" Width="1.003" />
@@ -79,7 +79,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Robot.Commands.FunctionCommand">
-    <Position X="3.75" Y="6" Width="1.75" />
+    <Position X="3.75" Y="6.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>CABACAAAAAAAJAAAAAAAAAAACAABCAAAAAAAAQAAAAA=</HashCode>
       <FileName>Commands\FunctionCommand.cs</FileName>
@@ -91,8 +91,8 @@
     <InheritanceLine Type="Robot.Commands.CommandBase" FixedToPoint="true">
       <Path>
         <Point X="6.25" Y="2.824" />
-        <Point X="6.25" Y="5.625" />
-        <Point X="3.062" Y="5.625" />
+        <Point X="6.25" Y="5.75" />
+        <Point X="3.062" Y="5.75" />
         <Point X="3.062" Y="6.25" />
       </Path>
     </InheritanceLine>
@@ -100,8 +100,8 @@
       <Path>
         <Point X="2.75" Y="6.25" />
         <Point X="2.75" Y="5.188" />
-        <Point X="3.5" Y="5.188" />
-        <Point X="3.5" Y="3.978" />
+        <Point X="3.542" Y="5.188" />
+        <Point X="3.542" Y="3.978" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.145" Y="0.14" />

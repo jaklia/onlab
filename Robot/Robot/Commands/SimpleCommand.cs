@@ -26,6 +26,14 @@ namespace Robot.Commands
             Undo();
         }
         
+        public override void InitDone()
+        {
+            _done = true;
+        }
 
+        public override void InitUndone()
+        {
+            _done = false;
+        }
     }
 }

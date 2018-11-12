@@ -15,13 +15,7 @@ namespace Robot.Visitors
         Dictionary<string, List<CommandBase>> declaredFunctions;
         Action<CommandList> onEnterContext;
         Action<CommandList> onExitContext;
-        // szimbólumtáblák a fordprog tárgynál
-
-        //  fv / loop  lépésenként
-        // pályagenerátor  --> menüpont
-        // konstans paraméterek  --> int / dir
-        // hibakezelés: errornode-n kívül milyen hibák
-        // megjelenített ast szépítése
+        
 
         public RobotControllerVisitor(Game game, Action<CommandList> onEnterContext, Action<CommandList> onExitContext /*CommandManager cmdManager*/)
         {

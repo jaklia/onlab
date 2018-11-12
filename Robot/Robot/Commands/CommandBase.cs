@@ -28,5 +28,9 @@ namespace Robot.Commands
         public abstract void DoAll();
 
         public abstract void UndoAll();
+
+        public abstract void InitDone();
+
+        public abstract void InitUndone();
     }
 }
