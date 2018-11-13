@@ -144,26 +144,26 @@ namespace Robot
             GameBoardGrid.Children.Clear();
             Image[,] imgs = new Image[game.Board.Height,game.Board.Width];
             // draw the board
-            for (int i=0; i<game.Board.Height; i++)
+            for (int row=0; row<game.Board.Height; row++)
             {
-                for (int j=0; j<game.Board.Width; j++)
+                for (int col=0; col<game.Board.Width; col++)
                 {
-                    imgs[i,j] = new Image();
-                    imgs[i, j].Height = 40;
-                    imgs[i, j].Width = 40;
-                    GameBoardGrid.Children.Add(imgs[i, j]);
-                    if (game.Board.GetField(i,j).HasItem())
+                    imgs[row, col] = new Image();
+                    imgs[row, col].Height = 40;
+                    imgs[row, col].Width = 40;
+                    GameBoardGrid.Children.Add(imgs[row, col]);
+                    if (game.Board.GetField(row, col).HasItem())
                     {
-                        Item item = game.Board.GetField(i, j).item;
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
-                    } else if (game.Board.GetField(i,j).GetType() == new Wall(0,0).GetType()) {
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
+                        Item item = game.Board.GetField(row, col).item;
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
+                    } else if (game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()) {
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
                     }
                     else {
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
                     }
-                    Grid.SetColumn(imgs[i, j], j);
-                    Grid.SetRow(imgs[i, j], i);
+                    Grid.SetColumn(imgs[row, col], col);
+                    Grid.SetRow(imgs[row, col], row);
                     
                 }
             }

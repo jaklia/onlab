@@ -8,7 +8,7 @@ namespace Robot.Model
 {
     public class EmptyField : Field
     {
-        public EmptyField(int col, int row) : base(col, row)
+        public EmptyField(int row, int col) : base(row, col)
         {
         }
     }

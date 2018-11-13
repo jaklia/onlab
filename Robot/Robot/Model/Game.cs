@@ -6,9 +6,9 @@ namespace Robot.Model
         public Robot Player;
         public Board Board;
 
-        public Game (int boardWith, int boardHeight)
+        public Game (int boardHeight, int boardWith)
         {
-            Board = new Board(boardWith, boardHeight);
+            Board = new Board(boardHeight, boardWith);
             Player = new Robot(Board, MoveDir.RIGHT);
             //Board.Init1();
         }

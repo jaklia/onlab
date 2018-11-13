@@ -13,7 +13,7 @@ namespace Robot.Model
 
         public Item item { get; set; }
 
-        public Field (int col, int row, Item item = null)
+        public Field (int row, int col, Item item = null)
         {
             Column = col;
             Row = row;
@@ -61,7 +61,7 @@ namespace Robot.Model
         public virtual Field Clone()
         {
             Item newItem = item == null ? null : new Item(item);
-            Field f = new Field(Column, Row, newItem);
+            Field f = new Field(Row, Column, newItem);
             return f;
         }
     }
