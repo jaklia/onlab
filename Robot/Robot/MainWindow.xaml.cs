@@ -138,6 +138,11 @@ namespace Robot
             DrawGame(game);
             
         }
+        
+        private void LoadMap_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
 
         void DrawGame(Game game)
         {

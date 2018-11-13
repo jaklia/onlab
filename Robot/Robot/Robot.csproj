@@ -95,6 +95,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Visitors\MapBuilderVisitor.cs" />
     <Compile Include="Visitors\RobotControllerVisitor.cs" />
     <Compile Include="Visitors\TreeViewGeneratorVisitor.cs" />
     <Page Include="MainWindow.xaml">

@@ -54,14 +54,24 @@ namespace Robot.Model
             return Fields[row][col];
         }
 
-        public void SetStart(int row, int col)
+        public void Start(int row, int col)
         {
             start = Fields[row][col];
         }
 
-        public void SetWall(int row, int col)
+        public void Wall(int row, int col)
         {
             Fields[row][col] = new Wall(row, col);
+        }
+
+        public void Finish(int row, int col)
+        {
+            dest = Fields[row][col];
+        }
+
+        public void Key(int row, int col)
+        {
+            Fields[row][col].PutItem(new Item(0, "key"));
         }
 
         public void Init1()
