@@ -10,14 +10,8 @@
         Width="980"
         MinHeight="580"
         MinWidth="980">
-    <Grid VerticalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
+    <DockPanel LastChildFill="True">
         <Menu x:Name="menu"
-              Grid.Row="0"
               DockPanel.Dock="Top"
               VerticalContentAlignment="Center"
               Height="30">
@@ -30,110 +24,155 @@
                 <MenuItem Header="Save program"
                           IsEnabled="False">
                 </MenuItem>
-                <MenuItem Header="Load map" Click="LoadMap_Click" />
+                <MenuItem Header="Load map"
+                          Click="LoadMap_Click" />
             </MenuItem>
         </Menu>
-
-        <Canvas x:Name="canvas"
-                Grid.Row="1"
-                VerticalAlignment="Stretch"
-                HorizontalAlignment="Stretch">
-            <TextBox x:Name="textBox"
-                     Canvas.Top="10"
-                     Canvas.Left="10"
-                     Height="400"
-                     Width="300"
-                     Margin="0,0,0,0"
-                     FontSize="15"
-                     TextWrapping="Wrap"
-                     AcceptsReturn="True"
-                     FontFamily="Consolas" />
-            <Button x:Name="ParseButton"
-                    Content="Parse"
-                    Canvas.Left="10"
-                    Canvas.Top="420"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    Margin="0,0,0,0"
-                    Width="75"
-                    Click="ParseButton_Click" />
-            <Button x:Name="StartButton"
-                    Content="Start"
-                    Canvas.Left="100"
-                    Canvas.Top="420"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Margin="0,0,0,0"
-                    Width="75"
-                    Click="StartButton_Click" />
-            <Button x:Name="ResetButton"
-                    Content="Reset"
-                    Canvas.Left="190"
-                    Canvas.Top="420"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Margin="0,0,0,0"
-                    Width="75"
-                    Click="ResetButton_Click" />
-            <Grid x:Name="GameBoardGrid"
-                  Canvas.Top="10"
-                  Canvas.Left="330"
-                  Height="400"
-                  Width="400"
-                  Background="AliceBlue"
-                  ShowGridLines="True">
-                <Grid.ColumnDefinitions>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                </Grid.RowDefinitions>
-
-            </Grid>
-            <TreeView x:Name="treeView"
-                      Canvas.Right="10"
-                      Canvas.Top="10"
-                      Canvas.Bottom="10"
-                      Margin="0,0,0,0"
-                      FontFamily="Consolas"
-                      Width="200"
-                      Height="407"
-                      HorizontalAlignment="Right"
-                      VerticalAlignment="Stretch" />
-            
-            <Button x:Name="UndoAllBtn"
-                    Content="&lt;&lt;"
-                    Canvas.Left="330"
-                    Canvas.Top="420"
-                    Width="20"
-                    Click="UndoAllBtn_Click" 
-                    ToolTip="Undo all commands" />
-            <Button x:Name="UndoCmdBtn"
-                    Content="&lt;"
-                    Canvas.Left="370"
-                    Canvas.Top="420"
-                    Width="20"
-                    Click="UndoCmdBtn_Click"
-                    ToolTip="Undo last command"/>
-            <Button x:Name="DoCmdBtn"
-                    Content=">"
-                    Canvas.Left="410"
-                    Canvas.Top="420"
-                    Width="20"
-                    Click="DoCmdBtn_Click"
-                    ToolTip="Run next command"/>
-            <Button x:Name="DoAllBtn"
-                    Content=">>"
-                    Canvas.Left="450"
-                    Canvas.Top="420"
-                    Width="20"
-                    Click="DoAllBtn_Click"
-                    ToolTip="Run all commands" />
-
-        </Canvas>
-
-        <StatusBar Grid.Row="2"
+        <StatusBar
                    Height="30"
                    DockPanel.Dock="Bottom"
                    VerticalAlignment="Bottom">
         </StatusBar>
-    </Grid>
+
+        <Grid VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Button x:Name="ParseButton"
+                        Content="Parse"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="10,10,0,0"
+                        Width="75"
+                        Click="ParseButton_Click" />
+                <Button x:Name="StartButton"
+                        Content="Start"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="10,10,0,0"
+                        Width="75"
+                        Click="StartButton_Click" />
+                <Button x:Name="ResetButton"
+                        Content="Reset"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Margin="10,10,0,0"
+                        Width="75"
+                        Click="ResetButton_Click" />
+                <TextBox x:Name="textBox"
+                         Grid.Row="1"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="3"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Stretch"
+                         Width="300"
+                         Margin="10,10,0,10"
+                         FontSize="15"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         FontFamily="Consolas" />
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Button x:Name="UndoAllBtn"
+                        Content="&lt;&lt;"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="20"
+                        Margin="0,10,0,0"
+                        Click="UndoAllBtn_Click"
+                        ToolTip="Undo all commands" />
+                <Button x:Name="UndoCmdBtn"
+                        Content="&lt;"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="20"
+                        Margin="0,10,0,0"
+                        Click="UndoCmdBtn_Click"
+                        ToolTip="Undo last command" />
+                <Button x:Name="DoCmdBtn"
+                        Content=">"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="20"
+                        Margin="0,10,0,0"
+                        Click="DoCmdBtn_Click"
+                        ToolTip="Run next command" />
+                <Button x:Name="DoAllBtn"
+                        Content=">>"
+                        Grid.Row="0"
+                        Grid.Column="3"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="20"
+                        Margin="0,10,0,0"
+                        Click="DoAllBtn_Click"
+                        ToolTip="Run all commands" />
+
+                <Viewbox Stretch="Uniform"
+                         Grid.Row="1"
+                         Grid.Column="0"
+                         Grid.ColumnSpan="4"
+                         Margin="10,10,0,10"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Top">
+                    <Grid x:Name="GameBoardGrid"
+                          Background="AliceBlue"
+                          ShowGridLines="True">
+                        <Grid.ColumnDefinitions />
+                        <Grid.RowDefinitions />
+                    </Grid>
+                </Viewbox>
+                
+                
+            </Grid>
+
+            <TreeView x:Name="treeView"
+                      Grid.Column="2"
+                      Margin="10,10,10,10"
+                      FontFamily="Consolas"
+                      Width="200"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Stretch" />
+            
+        </Grid>
+
+    </DockPanel>
+    
 </Window>

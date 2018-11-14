@@ -1,11 +1,5 @@
 ﻿using Robot.Grammar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using Robot.Model;
 
 namespace Robot.Visitors
@@ -13,9 +7,6 @@ namespace Robot.Visitors
     class MapBuilderVisitor : MapEditorGrammarBaseVisitor<object>
     {
         Board map;
-        
-
-      
 
         public override object VisitMap([NotNull] MapEditorGrammarParser.MapContext context)
         {

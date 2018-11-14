@@ -41,7 +41,9 @@ namespace Robot
        
         void InitGame()
         {
+            //game = new Game(10, 10);
             game = new Game(10, 10);
+
             //cmdManager = new Commands.CommandManager(); // eznemkellitt
             game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
@@ -149,7 +151,7 @@ namespace Robot
             if (res)
             {
                 //MessageBox.Show(filePicker.FileName);
-                string map = File.ReadAllText(filePicker.FileName, System.Text.Encoding.Default);
+                string map = File.ReadAllText(filePicker.FileName);
                 var inputStream = new AntlrInputStream(map);
                 var lexer = new MapEditorGrammarLexer(inputStream);
                 var tokenStream = new CommonTokenStream(lexer);
@@ -171,8 +173,10 @@ namespace Robot
                 for (int col=0; col<game.Board.Width; col++)
                 {
                     imgs[row, col] = new Image();
-                    imgs[row, col].Height = 40;
-                    imgs[row, col].Width = 40;
+                    //imgs[row, col].Height = 40;
+                    //imgs[row, col].Width = 40;
+                    imgs[row, col].Stretch = System.Windows.Media.Stretch.Uniform;
+                    imgs[row, col].Margin = new Thickness(2, 2, 2, 2);
                     GameBoardGrid.Children.Add(imgs[row, col]);
                     if (game.Board.GetField(row, col).HasItem())
                     {
@@ -194,8 +198,10 @@ namespace Robot
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
-            RobotImg.Height = 40;
-            RobotImg.Width = 40;
+            //RobotImg.Height = 40;
+            //RobotImg.Width = 40;
+            RobotImg.Stretch = System.Windows.Media.Stretch.Uniform;
+            RobotImg.Margin = new Thickness(2, 2, 2, 2);
             Grid.SetColumn(RobotImg, game.Player.Column);
             Grid.SetRow(RobotImg, game.Player.Row);
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */
