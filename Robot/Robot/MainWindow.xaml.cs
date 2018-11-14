@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using Robot.Commands;
+using System.IO;
+using Microsoft.Win32;
 
 namespace Robot
 {
@@ -141,7 +143,22 @@ namespace Robot
         
         private void LoadMap_Click(object sender, RoutedEventArgs e)
         {
-            
+            OpenFileDialog filePicker = new OpenFileDialog();
+            bool res = filePicker.ShowDialog() ?? false;
+
+            if (res)
+            {
+                //MessageBox.Show(filePicker.FileName);
+                string map = File.ReadAllText(filePicker.FileName, System.Text.Encoding.Default);
+                var inputStream = new AntlrInputStream(map);
+                var lexer = new MapEditorGrammarLexer(inputStream);
+                var tokenStream = new CommonTokenStream(lexer);
+                var parser = new MapEditorGrammarParser(tokenStream);
+                MapEditorGrammarParser.MapContext mapCtx = parser.map();
+                var mapBuilderVisitor = new MapBuilderVisitor();
+                mapBuilderVisitor.Visit(mapCtx);
+            }
+
         }
 
         void DrawGame(Game game)

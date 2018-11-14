@@ -15,16 +15,14 @@ namespace Robot.Visitors
         Board map;
         
 
-        public override object Visit(IParseTree tree)
-        {
-            return base.Visit(tree);
-        }
+      
 
         public override object VisitMap([NotNull] MapEditorGrammarParser.MapContext context)
         {
             var height = int.Parse(context.height().GetText());
             var width = int.Parse(context.width().GetText());
             map = new Board(width, height);
+            // map = new Board(10, 10);
             return base.VisitMap(context);
         }
 
@@ -45,8 +43,8 @@ namespace Robot.Visitors
 
         public override object VisitStart([NotNull] MapEditorGrammarParser.StartContext context)
         {
-            var col = int.Parse(context.col().GetText());
-            var row = int.Parse(context.row().GetText());
+            var col = int.Parse(context.col().GetText()) - 1;
+            var row = int.Parse(context.row().GetText()) - 1;
             map.Start(row, col);
             return base.VisitStart(context);
         }
@@ -58,37 +56,40 @@ namespace Robot.Visitors
 
         public override object VisitWall([NotNull] MapEditorGrammarParser.WallContext context)
         {
-            var col = int.Parse(context.col().GetText());
-            var row = int.Parse(context.row().GetText());
+            var col = int.Parse(context.col().GetText()) - 1;
+            var row = int.Parse(context.row().GetText()) - 1;
             map.Wall(row, col);
             return base.VisitWall(context);
         }
         
         public override object VisitFinish([NotNull] MapEditorGrammarParser.FinishContext context)
         {
-            var col = int.Parse(context.col().GetText());
-            var row = int.Parse(context.row().GetText());
+            var col = int.Parse(context.col().GetText()) - 1;
+            var row = int.Parse(context.row().GetText()) - 1;
             map.Finish(row, col);
             return base.VisitFinish(context);
         }
         
         public override object VisitKey([NotNull] MapEditorGrammarParser.KeyContext context)
         {
-            var col = int.Parse(context.col().GetText());
-            var row = int.Parse(context.row().GetText());
+            var col = int.Parse(context.col().GetText()) - 1;
+            var row = int.Parse(context.row().GetText()) - 1;
             map.Key(row, col);
             return base.VisitKey(context);
         }
         
-        public override object VisitRow([NotNull] MapEditorGrammarParser.RowContext context)
-        {
-            throw new NotImplementedException();
-        }
+        //public override object VisitRow([NotNull] MapEditorGrammarParser.RowContext context)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override object VisitCol([NotNull] MapEditorGrammarParser.ColContext context)
-        {
-            throw new NotImplementedException();
-        }
+        //public override object VisitCol([NotNull] MapEditorGrammarParser.ColContext context)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
+
 
 
         //public object VisitTerminal(ITerminalNode node)
