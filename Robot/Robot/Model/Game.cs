@@ -13,6 +13,12 @@ namespace Robot.Model
             //Board.Init1();
         }
 
+        public Game (Board map)
+        {
+            Board = map;
+            Player = new Robot(Board, MoveDir.RIGHT);
+        }
+
         public Game (Game other)
         {
             Board = new Board(other.Board);

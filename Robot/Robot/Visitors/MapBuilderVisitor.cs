@@ -7,6 +7,7 @@ namespace Robot.Visitors
     class MapBuilderVisitor : MapEditorGrammarBaseVisitor<object>
     {
         Board map;
+        public Board Map { get { return map; } }
 
         public override object VisitMap([NotNull] MapEditorGrammarParser.MapContext context)
         {
@@ -36,7 +37,7 @@ namespace Robot.Visitors
         {
             var col = int.Parse(context.col().GetText()) - 1;
             var row = int.Parse(context.row().GetText()) - 1;
-            map.Start(row, col);
+            map.SetStartField(row, col);
             return base.VisitStart(context);
         }
 
@@ -49,7 +50,7 @@ namespace Robot.Visitors
         {
             var col = int.Parse(context.col().GetText()) - 1;
             var row = int.Parse(context.row().GetText()) - 1;
-            map.Wall(row, col);
+            map.SetWall(row, col);
             return base.VisitWall(context);
         }
         
@@ -57,7 +58,7 @@ namespace Robot.Visitors
         {
             var col = int.Parse(context.col().GetText()) - 1;
             var row = int.Parse(context.row().GetText()) - 1;
-            map.Finish(row, col);
+            map.SetFinishField(row, col);
             return base.VisitFinish(context);
         }
         

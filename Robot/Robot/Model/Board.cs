@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Robot.Model
+﻿namespace Robot.Model
 {
     public class Board
     {
@@ -13,7 +7,9 @@ namespace Robot.Model
         Field[][] Fields;
         Field start, dest;
 
-        //  TODO : ide kell egy GetDestField fv és majd az alapján kell a célmezőt kirajzolni
+        public Field Finish { get { return dest; } }
+        public Field Start {  get { return start; } }
+        
 
         public Board(int height, int width)
         {
@@ -47,6 +43,8 @@ namespace Robot.Model
                     }
                 }
             }
+            start = Fields[other.start.Row][other.start.Column];
+            dest = Fields[other.dest.Row][other.dest.Column];
         }
 
         public Field GetField(int row, int col)
@@ -54,17 +52,17 @@ namespace Robot.Model
             return Fields[row][col];
         }
 
-        public void Start(int row, int col)
+        public void SetStartField(int row, int col)
         {
             start = Fields[row][col];
         }
 
-        public void Wall(int row, int col)
+        public void SetWall(int row, int col)
         {
             Fields[row][col] = new Wall(row, col);
         }
 
-        public void Finish(int row, int col)
+        public void SetFinishField(int row, int col)
         {
             dest = Fields[row][col];
         }

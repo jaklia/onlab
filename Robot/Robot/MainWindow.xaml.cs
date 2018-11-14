@@ -31,21 +31,32 @@ namespace Robot
         {
             InitializeComponent();
 
-            for (int i = 0; i < 10; i++)
-            {
-                GameBoardGrid.RowDefinitions.Add(new RowDefinition());
-                GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            }
-            InitGame();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    GameBoardGrid.RowDefinitions.Add(new RowDefinition());
+            //    GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            //}
+
+         //   InitGame();
         }
        
-        void InitGame()
+        void InitGame(string path)
         {
-            //game = new Game(10, 10);
-            game = new Game(10, 10);
+            Board map = GetMap(path);
+
+            game = new Game(map);
+
+            for (int i = 0; i < map.Height; i++)
+            {
+                GameBoardGrid.RowDefinitions.Add(new RowDefinition());
+            }
+            for (int i = 0; i < map.Width; i++)
+            {
+                GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
 
             //cmdManager = new Commands.CommandManager(); // eznemkellitt
-            game.Board.Init2();
+        //    game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
@@ -151,16 +162,29 @@ namespace Robot
             if (res)
             {
                 //MessageBox.Show(filePicker.FileName);
-                string map = File.ReadAllText(filePicker.FileName);
-                var inputStream = new AntlrInputStream(map);
-                var lexer = new MapEditorGrammarLexer(inputStream);
-                var tokenStream = new CommonTokenStream(lexer);
-                var parser = new MapEditorGrammarParser(tokenStream);
-                MapEditorGrammarParser.MapContext mapCtx = parser.map();
-                var mapBuilderVisitor = new MapBuilderVisitor();
-                mapBuilderVisitor.Visit(mapCtx);
+
+                //Board map = GetMap(filePicker.FileName);
+                
+                // get map from visitor and pass it to initgame
+                InitGame(filePicker.FileName);
             }
 
+        }
+
+        Board GetMap (string path)
+        {
+            // readthe description from file
+            string map = File.ReadAllText(path);
+            // parse
+            var inputStream = new AntlrInputStream(map);
+            var lexer = new MapEditorGrammarLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new MapEditorGrammarParser(tokenStream);
+            MapEditorGrammarParser.MapContext mapCtx = parser.map();
+            // build the map in the visitor
+            var mapBuilderVisitor = new MapBuilderVisitor();
+            mapBuilderVisitor.Visit(mapCtx);
+            return mapBuilderVisitor.Map;
         }
 
         void DrawGame(Game game)
@@ -173,8 +197,8 @@ namespace Robot
                 for (int col=0; col<game.Board.Width; col++)
                 {
                     imgs[row, col] = new Image();
-                    //imgs[row, col].Height = 40;
-                    //imgs[row, col].Width = 40;
+                    imgs[row, col].MaxHeight = 40;
+                    imgs[row, col].MaxWidth = 40;
                     imgs[row, col].Stretch = System.Windows.Media.Stretch.Uniform;
                     imgs[row, col].Margin = new Thickness(2, 2, 2, 2);
                     GameBoardGrid.Children.Add(imgs[row, col]);
@@ -194,12 +218,13 @@ namespace Robot
                 }
             }
             // ehelyett a Board-ban GetDestField kell majd !!!
-            imgs[game.Board.Height - 1, game.Board.Width - 1].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
+            Field finish = game.Board.Finish;
+            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
-            //RobotImg.Height = 40;
-            //RobotImg.Width = 40;
+            RobotImg.MaxHeight = 40;
+            RobotImg.MaxWidth = 40;
             RobotImg.Stretch = System.Windows.Media.Stretch.Uniform;
             RobotImg.Margin = new Thickness(2, 2, 2, 2);
             Grid.SetColumn(RobotImg, game.Player.Column);

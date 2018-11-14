@@ -21,7 +21,7 @@ namespace Robot.Model
         {
             Board = board;
             Dir = moveDir;
-            Pos = Board.GetField(0, 0);
+            Pos = Board.Start;
             Items = new List<Item>();
         }
 
