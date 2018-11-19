@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using Robot.Commands;
+using System.IO;
+using Microsoft.Win32;
 
 namespace Robot
 {
@@ -29,19 +31,32 @@ namespace Robot
         {
             InitializeComponent();
 
-            for (int i = 0; i < 10; i++)
-            {
-                GameBoardGrid.RowDefinitions.Add(new RowDefinition());
-                GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            }
-            InitGame();
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    GameBoardGrid.RowDefinitions.Add(new RowDefinition());
+            //    GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            //}
+
+         //   InitGame();
         }
        
-        void InitGame()
+        void InitGame(string path)
         {
-            game = new Game(10, 10);
+            Board map = GetMap(path);
+
+            game = new Game(map);
+
+            for (int i = 0; i < map.Height; i++)
+            {
+                GameBoardGrid.RowDefinitions.Add(new RowDefinition());
+            }
+            for (int i = 0; i < map.Width; i++)
+            {
+                GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
             //cmdManager = new Commands.CommandManager(); // eznemkellitt
-            game.Board.Init2();
+        //    game.Board.Init2();
             startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
             DrawGame(game);
             StartButton.IsEnabled = false;
@@ -138,42 +153,80 @@ namespace Robot
             DrawGame(game);
             
         }
+        
+        private void LoadMap_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog filePicker = new OpenFileDialog();
+            bool res = filePicker.ShowDialog() ?? false;
+
+            if (res)
+            {
+                //MessageBox.Show(filePicker.FileName);
+
+                //Board map = GetMap(filePicker.FileName);
+                
+                // get map from visitor and pass it to initgame
+                InitGame(filePicker.FileName);
+            }
+
+        }
+
+        Board GetMap (string path)
+        {
+            // readthe description from file
+            string map = File.ReadAllText(path);
+            // parse
+            var inputStream = new AntlrInputStream(map);
+            var lexer = new MapEditorGrammarLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new MapEditorGrammarParser(tokenStream);
+            MapEditorGrammarParser.MapContext mapCtx = parser.map();
+            // build the map in the visitor
+            var mapBuilderVisitor = new MapBuilderVisitor();
+            mapBuilderVisitor.Visit(mapCtx);
+            return mapBuilderVisitor.Map;
+        }
 
         void DrawGame(Game game)
         {
             GameBoardGrid.Children.Clear();
             Image[,] imgs = new Image[game.Board.Height,game.Board.Width];
             // draw the board
-            for (int i=0; i<game.Board.Height; i++)
+            for (int row=0; row<game.Board.Height; row++)
             {
-                for (int j=0; j<game.Board.Width; j++)
+                for (int col=0; col<game.Board.Width; col++)
                 {
-                    imgs[i,j] = new Image();
-                    imgs[i, j].Height = 40;
-                    imgs[i, j].Width = 40;
-                    GameBoardGrid.Children.Add(imgs[i, j]);
-                    if (game.Board.GetField(i,j).HasItem())
+                    imgs[row, col] = new Image();
+                    imgs[row, col].MaxHeight = 40;
+                    imgs[row, col].MaxWidth = 40;
+                    imgs[row, col].Stretch = System.Windows.Media.Stretch.Uniform;
+                    imgs[row, col].Margin = new Thickness(2, 2, 2, 2);
+                    GameBoardGrid.Children.Add(imgs[row, col]);
+                    if (game.Board.GetField(row, col).HasItem())
                     {
-                        Item item = game.Board.GetField(i, j).item;
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
-                    } else if (game.Board.GetField(i,j).GetType() == new Wall(0,0).GetType()) {
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
+                        Item item = game.Board.GetField(row, col).item;
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
+                    } else if (game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()) {
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
                     }
                     else {
-                        imgs[i, j].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
+                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
                     }
-                    Grid.SetColumn(imgs[i, j], j);
-                    Grid.SetRow(imgs[i, j], i);
+                    Grid.SetColumn(imgs[row, col], col);
+                    Grid.SetRow(imgs[row, col], row);
                     
                 }
             }
             // ehelyett a Board-ban GetDestField kell majd !!!
-            imgs[game.Board.Height - 1, game.Board.Width - 1].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
+            Field finish = game.Board.Finish;
+            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
-            RobotImg.Height = 40;
-            RobotImg.Width = 40;
+            RobotImg.MaxHeight = 40;
+            RobotImg.MaxWidth = 40;
+            RobotImg.Stretch = System.Windows.Media.Stretch.Uniform;
+            RobotImg.Margin = new Thickness(2, 2, 2, 2);
             Grid.SetColumn(RobotImg, game.Player.Column);
             Grid.SetRow(RobotImg, game.Player.Row);
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */

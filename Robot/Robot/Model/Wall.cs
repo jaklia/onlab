@@ -8,7 +8,7 @@ namespace Robot.Model
 {
     public class Wall : Field
     {
-        public Wall(int col, int row) : base(col, row)
+        public Wall( int row, int col) : base(row, col)
         {
         }
 
@@ -19,7 +19,7 @@ namespace Robot.Model
 
         public override Field Clone()
         {
-            Wall w = new Wall(Column, Row);
+            Wall w = new Wall(Row, Column);
             return w;
         }
     }
