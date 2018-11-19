@@ -1,7 +1,13 @@
 grammar RobotGrammar;
 
 program: functionDefinitions 
-         instructionSet;
+        instructionSet;
+//prog: asd*;
+
+//asd: functionDef |
+ //        instruction;
+
+
 functionDefinitions: functionDef*;
 instructionSet: instruction+;
 instruction: moveInstruction |

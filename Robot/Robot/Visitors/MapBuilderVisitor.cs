@@ -6,7 +6,7 @@ namespace Robot.Visitors
 {
     class MapBuilderVisitor : MapEditorGrammarBaseVisitor<object>
     {
-        Board map;
+        private Board map;
         public Board Map { get { return map; } }
 
         public override object VisitMap([NotNull] MapEditorGrammarParser.MapContext context)
