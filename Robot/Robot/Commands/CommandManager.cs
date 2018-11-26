@@ -21,13 +21,12 @@ namespace Robot.Commands
 
         public CommandManager(Game game, RobotGrammarParser.ProgramContext ctx)
         {
-            //Reset();
-            //_cmdList = new List<CommandBase>();
-
+            
             contextStack = new Stack<CommandList>();
 
-            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, 
-                (CommandList cmdList)=> {
+            RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game,
+                (CommandList cmdList) =>
+                {
                     contextStack.Push(cmdList);
                 },
                 (CommandList cmdList) => contextStack.Pop());
@@ -40,13 +39,7 @@ namespace Robot.Commands
             undoIndex = -1;
         }
 
-        //public void Reset()
-        //{
-        //    _cmdList = new List<CommandBase>();
-        //    doIndex = 0;
-        //    undoIndex = -1;
-        //}
-
+      
         // run the next command (run step by step if it's not a simple command)
         public void DoCommand()
         {

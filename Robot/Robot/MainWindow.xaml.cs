@@ -76,6 +76,16 @@ namespace Robot
             var parser = new RobotGrammarParser(tokenStream);
             //parser.BuildParseTree = true;
             ctx = parser.program();
+
+            // check errors
+            var errorVisitor = new RobotErrorVisitor();
+            var what = errorVisitor.Visit(ctx);
+
+            if (errorVisitor.errorList.Count > 0)
+            {
+                MessageBox.Show("errors");
+                return;
+            }
             
             // TreeView 
             treeView.Items.Clear();
