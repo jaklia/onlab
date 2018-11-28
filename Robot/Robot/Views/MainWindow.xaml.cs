@@ -5,12 +5,12 @@ using Robot.Visitors;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Collections.Generic;
-using Robot.Commands;
 using System.IO;
 using Microsoft.Win32;
+using Robot.ViewModels;
+using System.Collections.Generic;
+using Robot.Errors;
 
 namespace Robot
 {
@@ -24,26 +24,14 @@ namespace Robot
         Image RobotImg = new Image();
         Game startingState;
         Commands.CommandManager cmdManager;  
-        // !!!  TODO:  add the commands in the visitor, and execute them in DoCmdBtn_Click
-        //           and UndoCmdBtn_Click
 
         public MainWindow()
         {
             InitializeComponent();
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    GameBoardGrid.RowDefinitions.Add(new RowDefinition());
-            //    GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //}
-
-         //   InitGame();
         }
        
-        void InitGame(string path)
+        void InitGame(Board map)
         {
-            Board map = GetMap(path);
-
             game = new Game(map);
 
             for (int i = 0; i < map.Height; i++)
@@ -161,7 +149,6 @@ namespace Robot
             // enable only if we are in a loop / function
             cmdManager.DoAll();
             DrawGame(game);
-            
         }
         
         private void LoadMap_Click(object sender, RoutedEventArgs e)
@@ -169,31 +156,49 @@ namespace Robot
             OpenFileDialog filePicker = new OpenFileDialog();
             bool res = filePicker.ShowDialog() ?? false;
 
-            if (res)
+            if (res) 
             {
-                //MessageBox.Show(filePicker.FileName);
+                var ctx = getMapContext(filePicker.FileName);
+                var errorList = ValidateMap(ctx);
 
-                //Board map = GetMap(filePicker.FileName);
-                
-                // get map from visitor and pass it to initgame
-                InitGame(filePicker.FileName);
+                if (errorList.Count == 0)
+                {
+                    var map = GetMap(ctx);
+                    InitGame(map);
+                }else
+                {
+                    errorList.ForEach(item => ((MainViewModel)DataContext).errorList.Add(item));
+                    
+                }
             }
-
         }
 
-        Board GetMap (string path)
+        MapEditorGrammarParser.MapContext getMapContext (string path)
         {
-            // readthe description from file
+            // read the description from file
             string map = File.ReadAllText(path);
             // parse
             var inputStream = new AntlrInputStream(map);
             var lexer = new MapEditorGrammarLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new MapEditorGrammarParser(tokenStream);
-            MapEditorGrammarParser.MapContext mapCtx = parser.map();
+            MapEditorGrammarParser.MapContext ctx = parser.map();
+            return ctx;
+        }
+
+        List<ErrorLogItem> ValidateMap(MapEditorGrammarParser.MapContext ctx)
+        {
+            // check for errors
+            var mapErrorVisitor = new MapErrorVisitor();
+            mapErrorVisitor.Visit(ctx);
+            return mapErrorVisitor.errorList;
+        }
+        
+        Board GetMap (MapEditorGrammarParser.MapContext ctx)
+        {
             // build the map in the visitor
             var mapBuilderVisitor = new MapBuilderVisitor();
-            mapBuilderVisitor.Visit(mapCtx);
+            mapBuilderVisitor.Visit(ctx);
             return mapBuilderVisitor.Map;
         }
 
@@ -207,6 +212,8 @@ namespace Robot
                 for (int col=0; col<game.Board.Width; col++)
                 {
                     imgs[row, col] = new Image();
+                    Grid.SetColumn(imgs[row, col], col);
+                    Grid.SetRow(imgs[row, col], row);
                     imgs[row, col].MaxHeight = 40;
                     imgs[row, col].MaxWidth = 40;
                     imgs[row, col].Stretch = System.Windows.Media.Stretch.Uniform;
@@ -215,21 +222,21 @@ namespace Robot
                     if (game.Board.GetField(row, col).HasItem())
                     {
                         Item item = game.Board.GetField(row, col).item;
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
-                    } else if (game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()) {
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/Items/key.png", UriKind.Relative));
+                    } else if (game.Board.GetField(row, col) is Wall) {
+                        //  game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/wall.png", UriKind.Relative));
                     }
                     else {
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
-                    }
-                    Grid.SetColumn(imgs[row, col], col);
-                    Grid.SetRow(imgs[row, col], row);
-                    
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/emptyfield.png", UriKind.Relative));
+                    }                    
                 }
             }
-            // ehelyett a Board-ban GetDestField kell majd !!!
             Field finish = game.Board.Finish;
-            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
+            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("../Resources/destflag.png", UriKind.Relative));
+            
+            // ez így nem jó,   btw miért csak úgy jó ha ki van írva a path??
+            //imgs[finish.Row, finish.Column] = (Image)Resources["destfield"];  
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
@@ -242,16 +249,16 @@ namespace Robot
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */
             {
                 case MoveDir.UP:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/up.png", UriKind.Relative));
                     break;
                 case MoveDir.RIGHT:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/right.png", UriKind.Relative));
                     break;
                 case MoveDir.DOWN:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/down.png", UriKind.Relative));
                     break;
                 case MoveDir.LEFT:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/left.png", UriKind.Relative));
                     break;
                 default:
                     break;
