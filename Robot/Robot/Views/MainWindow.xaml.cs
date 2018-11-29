@@ -173,7 +173,7 @@ namespace Robot
             }
         }
 
-        MapEditorGrammarParser.MapContext getMapContext (string path)
+        MapEditorGrammarParser.BuildMapContext getMapContext (string path)
         {
             // read the description from file
             string map = File.ReadAllText(path);
@@ -182,11 +182,11 @@ namespace Robot
             var lexer = new MapEditorGrammarLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new MapEditorGrammarParser(tokenStream);
-            MapEditorGrammarParser.MapContext ctx = parser.map();
+            MapEditorGrammarParser.BuildMapContext ctx = parser.buildMap();
             return ctx;
         }
 
-        List<ErrorLogItem> ValidateMap(MapEditorGrammarParser.MapContext ctx)
+        List<ErrorLogItem> ValidateMap(MapEditorGrammarParser.BuildMapContext ctx)
         {
             // check for errors
             var mapErrorVisitor = new MapErrorVisitor();
@@ -194,7 +194,7 @@ namespace Robot
             return mapErrorVisitor.errorList;
         }
         
-        Board GetMap (MapEditorGrammarParser.MapContext ctx)
+        Board GetMap (MapEditorGrammarParser.BuildMapContext ctx)
         {
             // build the map in the visitor
             var mapBuilderVisitor = new MapBuilderVisitor();

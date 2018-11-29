@@ -16,12 +16,15 @@ namespace Robot.Errors
 
         public int Line { get; private set; }
 
-        public ErrorLogItem(string text, string type, string source, int line)
+        public int Column { get; private set; }
+
+        public ErrorLogItem(string text, string type, string source, int line, int column)
         {
             Text = text;
             Type = type;
             Source = source;
             Line = line;
+            Column = column;
         }
     }
 }

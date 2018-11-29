@@ -30,7 +30,7 @@
                 <MenuItem Header="Save program"
                           IsEnabled="False" />
                 <MenuItem Header="Load map"
-                          Click="LoadMap_Click"/>
+                          Click="LoadMap_Click" />
             </MenuItem>
         </Menu>
 
@@ -38,18 +38,41 @@
               DockPanel.Dock="Bottom"
               VerticalAlignment="Bottom">
             <ListView ItemsSource="{Binding errorList}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Text}" 
-                                       Width="200"/>
-                            <TextBlock Text="{Binding Type}"
-                                       Width="200"/>
-                            <TextBlock Text="{Binding Source}"
-                                       Width="200"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Width="250"
+                                        DisplayMemberBinding="{Binding Text}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader>Text</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="80"
+                                        DisplayMemberBinding="{Binding Line}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader>Line</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="80"
+                                        DisplayMemberBinding="{Binding Column}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader>Column</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="80"
+                                        DisplayMemberBinding="{Binding Type}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader>Type</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                        <GridViewColumn Width="80"
+                                        DisplayMemberBinding="{Binding Source}">
+                            <GridViewColumn.Header>
+                                <GridViewColumnHeader>Source</GridViewColumnHeader>
+                            </GridViewColumn.Header>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
             </ListView>
         </Grid>
 

@@ -14,7 +14,6 @@ namespace Robot.Visitors
             var height = int.Parse(context.height().GetText());
             var width = int.Parse(context.width().GetText());
             map = new Board(width, height);
-            // map = new Board(10, 10);
             return base.VisitMap(context);
         }
 
