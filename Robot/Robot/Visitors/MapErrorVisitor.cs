@@ -19,6 +19,7 @@ namespace Robot.Visitors
         private int row = -1;
         private bool hasStartField = false;
         private bool hasFinishField = false;
+        private bool hasKey = false;
         private Board map = null;
 
         private List<IErrorNode> antlrErrorList = new List<IErrorNode>();
@@ -65,6 +66,10 @@ namespace Robot.Visitors
             if (!hasFinishField)
             {
                 errorList.Add(new ErrorLogItem("Finish field missing", "Custom", "Map", context.Start.Line, context.Start.Column));
+            }
+            if (!hasKey)
+            {
+                errorList.Add(new ErrorLogItem("Key missing", "Custom", "Map", context.Start.Line, context.Start.Column));
             }
             return res;
         }
@@ -113,10 +118,22 @@ namespace Robot.Visitors
         public override object VisitStart([NotNull] MapEditorGrammarParser.StartContext context)
         {
             var res = base.VisitStart(context);
-            if (col > 0 && col <= width && row > 0 && row <= height)
+            if (col >= 0 && col < width && row >= 0 && row < height)
             {
-                map.SetStartField(row, col);
-                hasStartField = true;
+                if (map.GetField(row, col) is Wall)
+                {
+                    errorList.Add(new ErrorLogItem("Start field cannot be on a wall", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else if (map.GetField(row, col) == map.Finish)
+                {
+                    errorList.Add(new ErrorLogItem("Start field cannot be the same as finish", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else if (map.GetField(row, col).HasItem())
+                {
+                    errorList.Add(new ErrorLogItem("Start field cannot be at an item", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else
+                {
+                    map.SetStartField(row, col);
+                    hasStartField = true;
+                }
             }
             col = -1;
             row = -1;
@@ -126,10 +143,75 @@ namespace Robot.Visitors
         public override object VisitFinish([NotNull] MapEditorGrammarParser.FinishContext context)
         {
             var res = base.VisitFinish(context);
-            if (col > 0 && col <= width && row > 0 && row <= height)
+            if (col >= 0 && col < width && row >= 0 && row < height)
             {
-                map.SetFinishField(row, col);
-                hasFinishField = true;
+                if (map.GetField(row, col) is Wall)
+                {
+                    errorList.Add(new ErrorLogItem("Finish field cannot be on a wall", "Custom", "Map", context.Start.Line, context.Start.Column));
+                }
+                else if (map.GetField(row, col) == map.Finish)
+                {
+                    errorList.Add(new ErrorLogItem("Finish field cannot be the same as start", "Custom", "Map", context.Start.Line, context.Start.Column));
+                }
+                else if (map.GetField(row, col).HasItem())
+                {
+                    errorList.Add(new ErrorLogItem("Finish field cannot be at an item", "Custom", "Map", context.Start.Line, context.Start.Column));
+                }
+                else
+                {
+                    map.SetFinishField(row, col);
+                    hasFinishField = true;
+                }
+            }
+            col = -1;
+            row = -1;
+            return res;
+        }
+
+        public override object VisitKey([NotNull] MapEditorGrammarParser.KeyContext context)
+        {
+            var res = base.VisitKey(context);
+            if (col >= 0 && col < width && row >= 0 && row < height)
+            {
+                if (map.GetField(row, col) is Wall)
+                {
+                    errorList.Add(new ErrorLogItem("Key cannot be placed on a wall", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else if (map.GetField(row, col) == map.Finish)
+                {
+                    errorList.Add(new ErrorLogItem("Key cannot be at the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                }
+                else if (map.GetField(row, col) == map.Start)
+                {
+                    errorList.Add(new ErrorLogItem("Key cannot be at the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                }else
+                {
+                    map.Key(row, col);
+                }
+                hasKey = true;
+            }
+            col = -1;
+            row = -1;
+            return res;
+        }
+
+        public override object VisitWall([NotNull] MapEditorGrammarParser.WallContext context)
+        {
+            var res = base.VisitWall(context);
+            if (col >= 0 && col < width && row >= 0 && row < height)
+            {
+                if (map.GetField(row, col) == map.Start)
+                {
+                    errorList.Add(new ErrorLogItem("Wall cannot be at the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else if (map.GetField(row, col) == map.Finish)
+                {
+                    errorList.Add(new ErrorLogItem("Wall cannot be at the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else if (map.GetField(row, col).HasItem())
+                {
+                    errorList.Add(new ErrorLogItem("Wall cannot be at a field that has an item", "Custom", "Map", context.Start.Line, context.Start.Column));
+                } else
+                {
+                    map.SetWall(row, col);
+                }
             }
             col = -1;
             row = -1;
@@ -150,6 +232,7 @@ namespace Robot.Visitors
                     {
                         errorList.Add(new ErrorLogItem("Column value must be less than or equal to width", "Custom", "Map", context.Start.Line, context.Start.Column));
                     }
+                    col--;
                 }
                 catch (Exception)
                 {
@@ -174,6 +257,7 @@ namespace Robot.Visitors
                     {
                         errorList.Add(new ErrorLogItem("Row value must be less than or equal to width", "Custom", "Map", context.Start.Line, context.Start.Column));
                     }
+                    row--;
                 }
                 catch (Exception)
                 {
@@ -183,16 +267,7 @@ namespace Robot.Visitors
             return base.VisitRow(context);
         }
 
-        public override object VisitKey([NotNull] MapEditorGrammarParser.KeyContext context)
-        {
-            return base.VisitKey(context);
-        }
-
-        public override object VisitWall([NotNull] MapEditorGrammarParser.WallContext context)
-        {
-            return base.VisitWall(context);
-        }
-
+      
 
         //public object Visit(IParseTree tree)
         //{
