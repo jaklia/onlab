@@ -20,7 +20,7 @@ namespace Robot.Visitors
         private bool hasStartField = false;
         private bool hasFinishField = false;
         private bool hasKey = false;
-        private Board map = null;
+        private Map map = null;
 
         private List<IErrorNode> antlrErrorList = new List<IErrorNode>();
         public List<ErrorLogItem> errorList { get; } = new List<ErrorLogItem>();
@@ -51,7 +51,7 @@ namespace Robot.Visitors
             
             if (height > 0 && height <= MAX_HEIGHT && width > 0 && width <= MAX_WIDTH)
             {
-                map = new Board(height, width);
+                map = new Map(height, width);
             }
             return res;
         }

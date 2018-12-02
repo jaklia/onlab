@@ -1,6 +1,6 @@
 ﻿namespace Robot.Model
 {
-    public class Board
+    public class Map
     {
         public int Height { get; private set; }
         public int Width { get; private set; }
@@ -11,7 +11,7 @@
         public Field Start {  get { return start; } }
         
 
-        public Board(int height, int width)
+        public Map(int height, int width)
         {
             this.Width = width;
             this.Height = height;
@@ -26,7 +26,7 @@
             }
         }
 
-        public Board (Board other)
+        public Map (Map other)
         {
             Width = other.Width;
             Height = other.Height;

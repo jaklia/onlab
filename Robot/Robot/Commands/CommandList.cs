@@ -8,18 +8,16 @@ namespace Robot.Commands
         private int repeatCnt;
         private List<CommandBase> commands;
 
-        //private Game gameRef;
-
         private int doIteration = 1;
         private int undoIteration = 1;
         private int doIndex = 0;
         private int undoIndex = -1;
 
-        public CommandList(/*Game game,*/ List<CommandBase> commands, int repeatCnt = 1)
+        public CommandList(List<CommandBase> commands, int repeatCnt = 1)
         {
             this.repeatCnt = repeatCnt;
-            this.commands = new List<CommandBase>(commands);
-            //this.gameRef = game;
+            this.commands = commands;  // new List<CommandBase>(commands);
+           
         }
 
         public void Do()

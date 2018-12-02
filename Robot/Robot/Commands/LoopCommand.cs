@@ -43,14 +43,20 @@ namespace Robot.Commands
 
         public override void DoAll()
         {
-            ListContextEntered?.Invoke(cmdList);
+            if (Undone)
+            {
+                ListContextEntered?.Invoke(cmdList);
+            }
             cmdList.DoAll();
             ListContextExited?.Invoke(cmdList);
         }
 
         public override void UndoAll()
         {
-            ListContextEntered?.Invoke(cmdList);
+            if (Done)
+            {
+                ListContextEntered?.Invoke(cmdList);
+            }
             cmdList.UndoAll();
             ListContextExited?.Invoke(cmdList);
         }

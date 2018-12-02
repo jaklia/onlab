@@ -4,25 +4,25 @@ namespace Robot.Model
     public class Game  // deep copy
     {
         public Robot Player;
-        public Board Board;
+        public Map map;
 
         public Game (int boardHeight, int boardWith)
         {
-            Board = new Board(boardHeight, boardWith);
-            Player = new Robot(Board, MoveDir.RIGHT);
+            map = new Map(boardHeight, boardWith);
+            Player = new Robot(map, MoveDir.RIGHT);
             //Board.Init1();
         }
 
-        public Game (Board map)
+        public Game (Map map)
         {
-            Board = map;
-            Player = new Robot(Board, MoveDir.RIGHT);
+            this.map = map;
+            Player = new Robot(this.map, MoveDir.RIGHT);
         }
 
         public Game (Game other)
         {
-            Board = new Board(other.Board);
-            Player = new Robot(Board, other.Player);
+            map = new Map(other.map);
+            Player = new Robot(map, other.Player);
         }
 
         // return int instead of void

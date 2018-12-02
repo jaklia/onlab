@@ -1,24 +1,32 @@
 ﻿using Antlr4.Runtime.Misc;
+using Robot.Commands;
 using Robot.Grammar;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace Robot.Visitors
 {
     class TreeViewGeneratorVisitor : RobotGrammarBaseVisitor<TreeViewItem>
     {
+        private Dictionary<string, List<CommandBase>> declaredFunctions;
         public bool ExpandAll { get; set; }
+
+        public TreeViewGeneratorVisitor(Dictionary<string, List<CommandBase>> declaredFunctions)
+        {
+            this.declaredFunctions = declaredFunctions;
+        }
 
         public override TreeViewItem VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
         {
             TreeViewItem item = new TreeViewItem();
 
-            if (context.functionDefinitions() != null)
-            {
-                item = VisitFunctionDefinitions(context.functionDefinitions());
-            }
-            item.Header = "Functions";
+            //if (context.functionDefinitions() != null)
+            //{
+            //    item = VisitFunctionDefinitions(context.functionDefinitions());
+            //}
+            //item.Header = "Functions";
 
-            TreeViewItem newItem = VisitInstructionSet(context.instructionSet());
+            TreeViewItem newItem = VisitProgInstructionSet(context.progInstructionSet());
             newItem.Items.Add(item);
             newItem.Header = "program";
             if (ExpandAll)
@@ -26,6 +34,16 @@ namespace Robot.Visitors
                 newItem.ExpandSubtree();
             }
             return newItem;
+        }
+
+        public override TreeViewItem VisitProgInstructionSet([NotNull] RobotGrammarParser.ProgInstructionSetContext context)
+        {
+            TreeViewItem item = new TreeViewItem();
+            foreach (var instruction in context.progInstruction())
+            {
+                item.Items.Add(VisitProgInstruction(instruction));
+            }
+            return item;
         }
 
         public override TreeViewItem VisitInstructionSet([NotNull] RobotGrammarParser.InstructionSetContext context)
@@ -38,14 +56,24 @@ namespace Robot.Visitors
             return item;
         }
 
-        public override TreeViewItem VisitFunctionDefinitions([NotNull] RobotGrammarParser.FunctionDefinitionsContext context)
+        //public override TreeViewItem VisitFunctionDefinitions([NotNull] RobotGrammarParser.FunctionDefinitionsContext context)
+        //{
+        //    TreeViewItem item = new TreeViewItem();
+        //    foreach (var function in context.functionDef())
+        //    {
+        //        item.Items.Add(VisitFunctionDef(function));
+        //    }
+        //    return item;
+        //}
+
+        public override TreeViewItem VisitProgInstruction([NotNull] RobotGrammarParser.ProgInstructionContext context)
         {
-            TreeViewItem item = new TreeViewItem();
-            foreach (var function in context.functionDef())
-            {
-                item.Items.Add(VisitFunctionDef(function));
-            }
-            return item;
+            TreeViewItem newItem = new TreeViewItem();
+            if (context.functionDef() != null)
+                newItem = VisitFunctionDef(context.functionDef());
+            else if (context.instruction() != null)
+                newItem = VisitInstruction(context.instruction());
+            return newItem;
         }
 
         public override TreeViewItem VisitInstruction([NotNull] RobotGrammarParser.InstructionContext context)

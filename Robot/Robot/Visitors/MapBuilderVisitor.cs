@@ -6,14 +6,14 @@ namespace Robot.Visitors
 {
     class MapBuilderVisitor : MapEditorGrammarBaseVisitor<object>
     {
-        private Board map;
-        public Board Map { get { return map; } }
+        private Map map;
+        public Map Map { get { return map; } }
 
         public override object VisitMap([NotNull] MapEditorGrammarParser.MapContext context)
         {
             var height = int.Parse(context.height().GetText());
             var width = int.Parse(context.width().GetText());
-            map = new Board(width, height);
+            map = new Map(width, height);
             return base.VisitMap(context);
         }
 

@@ -1,16 +1,5 @@
-﻿using Antlr4.Runtime;
-using Microsoft.Win32;
-using Robot.Errors;
-using Robot.Grammar;
-using Robot.Visitors;
-using System;
-using System.Collections.Generic;
+﻿using Robot.Errors;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Robot.ViewModels

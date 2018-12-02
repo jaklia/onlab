@@ -1,75 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Robot.Model.Board">
-    <Position X="0.5" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAgAAAAAhAAAAAAkAAAAAEAAAAAACAAAAAAAAAAAgAA=</HashCode>
-      <FileName>Model\Board.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsCollectionAssociation>
-      <Field Name="Fields" />
-    </ShowAsCollectionAssociation>
-  </Class>
   <Class Name="Robot.Model.EmptyField">
-    <Position X="3.5" Y="6.75" Width="1.5" />
+    <Position X="4.5" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Model\EmptyField.cs</FileName>
+      <FileName>Models\EmptyField.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Robot.Model.Field">
     <Position X="3" Y="3.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAACgAAAACAAAAAAARAAAAAAAAAAgAAAAAAACAAABA=</HashCode>
-      <FileName>Model\Field.cs</FileName>
+      <FileName>Models\Field.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Robot.Model.Game">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAACAAASAAABA=</HashCode>
-      <FileName>Model\Game.cs</FileName>
+      <HashCode>BAAAEAAAAAAAAAAAAAAAAAQAAAAAAAAAACAAASAAABA=</HashCode>
+      <FileName>Models\Game.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="Player" />
-      <Field Name="Board" />
     </ShowAsAssociation>
   </Class>
   <Class Name="Robot.Model.Item">
-    <Position X="5.25" Y="5.25" Width="1.5" />
+    <Position X="5.25" Y="5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAgA=</HashCode>
-      <FileName>Model\Item.cs</FileName>
+      <FileName>Models\Item.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Robot.Model.Robot">
     <Position X="5.25" Y="0.5" Width="1.5" />
-    <NestedTypes>
-      <Enum Name="Robot.Model.Robot.MoveDir" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Model\Robot.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-      <Enum Name="Robot.Model.Robot.TurnDir" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Model\Robot.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Enum>
-    </NestedTypes>
-    <AssociationLine Name="Board" Type="Robot.Model.Board" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="5.25" Y="3" />
-        <Point X="2.375" Y="3" />
-        <Point X="2.375" Y="4.062" />
-        <Point X="2" Y="4.062" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAEAACAAAIAQCAAgAABCAAAAAACAAgAIQAAAACAAAAA=</HashCode>
-      <FileName>Model\Robot.cs</FileName>
+      <FileName>Models\Robot.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="Board" />
       <Property Name="Pos" />
     </ShowAsAssociation>
     <ShowAsCollectionAssociation>
@@ -77,11 +45,21 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Robot.Model.Wall">
-    <Position X="1.75" Y="6.75" Width="1.5" />
+    <Position X="2.25" Y="7" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
-      <FileName>Model\Wall.cs</FileName>
+      <FileName>Models\Wall.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Robot.Model.Map">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEgAAAAAhCAAAAQkAAAAAEAAAAAACAgEAAAAAAAAgAg=</HashCode>
+      <FileName>Models\Map.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="Fields" />
+    </ShowAsCollectionAssociation>
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -75,14 +75,14 @@
     <Compile Include="Commands\PickUpCommand.cs" />
     <Compile Include="Commands\SimpleCommand.cs" />
     <Compile Include="Commands\TurnCommand.cs" />
-    <Compile Include="Errors\ErrorLogItem.cs" />
+    <Compile Include="Utility\ErrorLogItem.cs" />
     <Compile Include="Grammar\MapEditorGrammar.g4.lexer.cs">
       <DependentUpon>MapEditorGrammar.g4</DependentUpon>
     </Compile>
     <Compile Include="Grammar\MapEditorGrammar.g4.parser.cs">
       <DependentUpon>MapEditorGrammar.g4</DependentUpon>
     </Compile>
-    <Compile Include="Models\Board.cs" />
+    <Compile Include="Models\Map.cs" />
     <Compile Include="Models\EmptyField.cs" />
     <Compile Include="Models\Field.cs" />
     <Compile Include="Models\Game.cs" />
@@ -96,7 +96,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\FunctionData.cs" />
+    <Compile Include="Utility\Parameter.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="Visitors\FunctionDefVisitor.cs" />
+    <Compile Include="Visitors\FunctionVisitor.cs" />
     <Compile Include="Visitors\MapBuilderVisitor.cs" />
     <Compile Include="Visitors\MapErrorVisitor.cs" />
     <Compile Include="Visitors\RobotControllerVisitor.cs" />

@@ -1,5 +1,6 @@
 ﻿using Robot.Grammar;
 using Robot.Model;
+using Robot.Utility;
 using Robot.Visitors;
 using System.Collections.Generic;
 
@@ -7,6 +8,7 @@ namespace Robot.Commands
 {
     class CommandManager
     {
+        public Dictionary<string, List<CommandBase>> declaredFunctions;
 
         private Stack<CommandList> contextStack;
 
@@ -19,12 +21,23 @@ namespace Robot.Commands
 
         private CommandBase nextCmd { get;  set; }
 
-        public CommandManager(Game game, RobotGrammarParser.ProgramContext ctx)
+        public CommandManager(Game game, 
+            Dictionary<string, List<Parameter>> functionParameters, 
+            RobotGrammarParser.ProgramContext ctx)
         {
             
             contextStack = new Stack<CommandList>();
 
+            var functionVisitor = new FunctionVisitor(game, functionParameters, 
+                (CommandList cmdList) =>
+                {
+                    contextStack.Push(cmdList);
+                },
+                (CommandList cmdList) => contextStack.Pop());
+            functionVisitor.VisitProgram(ctx);
+            declaredFunctions = functionVisitor.declaredFunctions;
             RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game,
+                declaredFunctions,
                 (CommandList cmdList) =>
                 {
                     contextStack.Push(cmdList);

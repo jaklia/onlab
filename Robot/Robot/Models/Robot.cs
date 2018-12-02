@@ -15,19 +15,19 @@ namespace Robot.Model
             get { return Pos.Row; }
         }
 
-        private Board Board;
+        private Map map;
 
-        public Robot(Board board, MoveDir moveDir = MoveDir.RIGHT)
+        public Robot(Map map, MoveDir moveDir = MoveDir.RIGHT)
         {
-            Board = board;
+            this.map = map;
             Dir = moveDir;
-            Pos = Board.Start;
+            Pos = this.map.Start;
             Items = new List<Item>();
         }
 
-        public Robot (Board board, Robot other)
+        public Robot (Map map, Robot other)
         {
-            Board = board;
+            this.map = map;
             Dir = other.Dir;
             Pos = new Field(other.Pos);
             Items = new List<Item>(other.Items);
@@ -81,36 +81,36 @@ namespace Robot.Model
         // to detect if the robot could step in that direction
         private bool MoveLeft()
         {
-            if (Column > 0 && Board.GetField(Row, Column - 1).AcceptsRobot())
+            if (Column > 0 && map.GetField(Row, Column - 1).AcceptsRobot())
             {
-                Pos = Board.GetField(Row, Column - 1);
+                Pos = map.GetField(Row, Column - 1);
                 return true;
             }
             return false;
         }
         private bool MoveRight()
         {
-            if (Column < Board.Width - 1 && Board.GetField(Row, Column + 1).AcceptsRobot())
+            if (Column < map.Width - 1 && map.GetField(Row, Column + 1).AcceptsRobot())
             {
-                Pos = Board.GetField(Row, Column + 1);
+                Pos = map.GetField(Row, Column + 1);
                 return true;
             }
             return false;
         }
         private bool MoveUp()
         {
-            if (Row > 0 && Board.GetField(Row - 1, Column).AcceptsRobot())
+            if (Row > 0 && map.GetField(Row - 1, Column).AcceptsRobot())
             {
-                Pos = Board.GetField(Row - 1, Column);
+                Pos = map.GetField(Row - 1, Column);
                 return true;
             }
             return false;
         }
         private bool MoveDown()
         {
-            if (Row < Board.Height - 1 && Board.GetField(Row + 1, Column).AcceptsRobot())
+            if (Row < map.Height - 1 && map.GetField(Row + 1, Column).AcceptsRobot())
             {
-                Pos = Board.GetField(Row + 1, Column);
+                Pos = map.GetField(Row + 1, Column);
                 return true;
             }
             return false;
