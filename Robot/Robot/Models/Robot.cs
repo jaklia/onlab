@@ -32,6 +32,15 @@ namespace Robot.Model
             Pos = new Field(other.Pos);
             Items = new List<Item>(other.Items);
         }
+
+        public Robot Clone(Map map)
+        {
+            Robot newRobot = new Robot(map, Dir);
+            newRobot.Pos = Pos.Clone();
+            newRobot.Items = new List<Item>();
+            Items.ForEach(item => newRobot.Items.Add(item.Clone()));
+            return newRobot;
+        }
       
 
         /** return int instead of void (number of steps the robot could make)
@@ -47,28 +56,24 @@ namespace Robot.Model
                 case MoveDir.UP:
                     while (amount > 0 && MoveUp())
                     {
-                        // MoveUp();
                         amount--;
                     }
                     break;
                 case MoveDir.RIGHT:
                     while (amount > 0 && MoveRight())
                     {
-                        // MoveRight();
                         amount--;
                     }
                     break;
                 case MoveDir.DOWN:
                     while (amount > 0 && MoveDown())
                     {
-                        // MoveDown();
                         amount--;
                     }
                     break;
                 case MoveDir.LEFT:
                     while (amount > 0 && MoveLeft())
                     {
-                        // MoveLeft();
                         amount--;
                     }
                     break;
@@ -144,10 +149,14 @@ namespace Robot.Model
 
         public void Drop(int itemId)
         {
-           if( Pos.PutItem(Items[itemId]))
+            if (itemId < Items.Count)
             {
-                Items.RemoveAt(itemId);
+                if (Pos.PutItem(Items[itemId]))
+                {
+                    Items.RemoveAt(itemId);
+                }
             }
+          
         }
        
     }

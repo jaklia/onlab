@@ -1,7 +1,5 @@
 grammar RobotGrammar;
 
-//program: functionDefinitions 
-//        instructionSet;
 
 program: progInstructionSet;
 
@@ -10,12 +8,10 @@ progInstructionSet: progInstruction*;
 progInstruction: functionDef |
                  instruction;
 
-//functionDefinitions: functionDef*;
 
 instructionSet: instruction+;
 instruction: moveInstruction |
              turnInstruction |
-             loopWhileInstruction |
              loopInstruction |
              pickUpInstruction |
              dropInstruction |
@@ -24,9 +20,7 @@ instruction: moveInstruction |
 loopInstruction: LOOPCMD repeatCnt 
                      instructionSet 
                  LOOPENDCMD;
-loopWhileInstruction: LOOPWHILECMD BRACKET1 condition BRACKET2 
-                          instructionSet 
-                      LOOPENDCMD;
+
 // function definitions
 functionDef: FUNCTIONCMD functionName BRACKET1 parameterDefList? BRACKET2
                   instructionSet
@@ -44,7 +38,6 @@ turnInstruction: TURNCMD dir;
 pickUpInstruction: PICKUPCMD;
 dropInstruction: DROPCMD itemId;
 
-condition: (NOT? (FREECMD|WALLCMD));    //   A && B,  A || B  ???
 
 functionName: ID;
 parameterName: ID;

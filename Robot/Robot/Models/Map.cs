@@ -38,7 +38,6 @@
                 {
                     if (other.Fields[i][j] != null)
                     {
-                        //Fields[i][j] = new Field(other.Fields[i][j]);
                         Fields[i][j] = other.Fields[i][j].Clone();
                     }
                 }

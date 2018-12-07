@@ -66,8 +66,8 @@ namespace Robot.Visitors
         {
             if (context.loopInstruction() != null)
                 return VisitLoopInstruction(context.loopInstruction());
-            else if (context.loopWhileInstruction() != null)
-                return VisitLoopWhileInstruction(context.loopWhileInstruction());
+            //else if (context.loopWhileInstruction() != null)
+            //    return VisitLoopWhileInstruction(context.loopWhileInstruction());
             else if (context.dropInstruction() != null)
                 return VisitDropInstruction(context.dropInstruction());
             else if (context.moveInstruction() != null)

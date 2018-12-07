@@ -6,27 +6,18 @@ namespace Robot.Commands
 {
     class LoopCommand : CommandBase , ICommandList
     {
-        //private int repeatCnt;
-        //private List<CommandBase> commands;
-        //private Game gameRef;
-
         private CommandList cmdList;
         
         public event Action<CommandList> ListContextEntered;
-        public event Action<CommandList> ListContextExited;  // ez valszeg nem kell itt
+        public event Action<CommandList> ListContextExited;  
 
-        //private LoopManager loopManager;
 
         public override bool Done { get { return cmdList.AllDone(); } }
         public override bool Undone { get { return cmdList.AllUndone(); } }
 
         public LoopCommand(Game game, int repeatCnt, List<CommandBase> commands)
         {
-            //this.repeatCnt = repeatCnt;
-            //this.commands = new List<CommandBase>(commands);
-            //this.gameRef = game;
             this.cmdList = new CommandList(/*game,*/ commands, repeatCnt);
-            //this.loopManager = new LoopManager(game, repeatCnt, commands);
         }
 
         public override void Do()
@@ -70,16 +61,6 @@ namespace Robot.Commands
         {
             cmdList.SetUndone();
         }
-
-        //public CommandBase nextCmd()
-        //{
-        //    return loopManager.getNext();
-        //}
-
-        //public CommandBase prevCmd()
-        //{
-        //    return loopManager.getPrev();
-        //}
 
 
     }

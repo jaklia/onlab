@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Robot.Model
+﻿namespace Robot.Model
 {
-    public class Item
+    public class Item 
     {
         int id;
         string name;
@@ -22,6 +16,11 @@ namespace Robot.Model
 
             id = other.id;
             name = new string(other.name.ToCharArray());
+        }
+
+        public Item Clone()
+        {
+            return new Model.Item(id, new string(name.ToCharArray()));
         }
     }
 }

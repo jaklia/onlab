@@ -257,67 +257,7 @@ namespace Robot.Visitors
         //{
         //    throw new NotImplementedException();
         //}
-
-
-
         
-
-        //public object VisitLeftDir([NotNull] RobotGrammarParser.LeftDirContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitRightDir([NotNull] RobotGrammarParser.RightDirContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitFunctionName([NotNull] RobotGrammarParser.FunctionNameContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitInstruction([NotNull] RobotGrammarParser.InstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitInstructionSet([NotNull] RobotGrammarParser.InstructionSetContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitLoopInstruction([NotNull] RobotGrammarParser.LoopInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitMoveInstruction([NotNull] RobotGrammarParser.MoveInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        
-
-        //public object VisitPickUpInstruction([NotNull] RobotGrammarParser.PickUpInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-
-        //public object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-        /* PROBABLY DON'T NEED THIS */
 
         //public object VisitParameterDef([NotNull] RobotGrammarParser.ParameterDefContext context)
         //{
@@ -328,36 +268,6 @@ namespace Robot.Visitors
 
 
 
-        /* 100%  DON'T NEED THIS */
-
-        //public object VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitTerminal(ITerminalNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object Visit(IParseTree tree)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitChildren(IRuleNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitCondition([NotNull] RobotGrammarParser.ConditionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitLoopWhileInstruction([NotNull] RobotGrammarParser.LoopWhileInstructionContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
     }
 }

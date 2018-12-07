@@ -55,8 +55,6 @@ namespace Robot.Visitors
         {
             if (context.loopInstruction() != null)
                 return VisitLoopInstruction(context.loopInstruction());
-            else if (context.loopWhileInstruction() != null)
-                return VisitLoopWhileInstruction(context.loopWhileInstruction());
             else if (context.dropInstruction() != null)
                 return VisitDropInstruction(context.dropInstruction());
             else if (context.moveInstruction() != null)
@@ -84,20 +82,10 @@ namespace Robot.Visitors
             return loopCmd;
         }
 
-        //public override object VisitFunctionDef([NotNull] RobotGrammarParser.FunctionDefContext context)
-        //{
-        //    string name = context.functionName().GetText();
-        //    List<CommandBase> cmdList = new List<CommandBase>();
-        //    cmdList = (List<CommandBase>)VisitInstructionSet(context.instructionSet());
-        //    declaredFunctions[name] = cmdList;
-        //    return 0;
-        //}
 
         public override object VisitFunctionCall([NotNull] RobotGrammarParser.FunctionCallContext context)
         {
-            /*  itt kell _currentFunction_ és _calledFunction_ 
-             *    és akkor a cmdListán végig lehet menni
-             */
+            
             string name = context.functionName().GetText();
             FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
             ((ICommandList)functionCmd).ListContextEntered += onEnterContext;
@@ -105,13 +93,7 @@ namespace Robot.Visitors
             return functionCmd;
         }
 
-        public override object VisitLoopWhileInstruction([NotNull] RobotGrammarParser.LoopWhileInstructionContext context)
-        {
-            /*  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-             */
-            return base.VisitLoopWhileInstruction(context);
-        }
-
+      
         public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
         {
             int itemId = int.Parse(VisitItemId(context.itemId()).ToString());
@@ -188,10 +170,10 @@ namespace Robot.Visitors
             return context.GetText();
         }
 
-        public override object VisitCondition([NotNull] RobotGrammarParser.ConditionContext context)
-        {
-            return base.VisitCondition(context);
-        }
+        //public override object VisitCondition([NotNull] RobotGrammarParser.ConditionContext context)
+        //{
+        //    return base.VisitCondition(context);
+        //}
 
     }
 }

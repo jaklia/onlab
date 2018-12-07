@@ -6,9 +6,6 @@ namespace Robot.Commands
 {
     public class FunctionCommand : CommandBase, ICommandList
     {
-        //private List<CommandBase> commands;
-        //private Game gameRef;
-
         private CommandList cmdList;
 
         public event Action<CommandList> ListContextEntered;
@@ -19,9 +16,6 @@ namespace Robot.Commands
 
         public FunctionCommand(Game game, List<CommandBase> commands)
         {
-            //gameRef = game;
-            //this.commands = new List<CommandBase>(commands);
-
 
             cmdList = new CommandList(commands);
         }

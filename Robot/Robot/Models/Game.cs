@@ -1,7 +1,7 @@
 ﻿
 namespace Robot.Model
 {
-    public class Game  // deep copy
+    public class Game 
     {
         public Robot Player;
         public Map map;
@@ -10,7 +10,6 @@ namespace Robot.Model
         {
             map = new Map(boardHeight, boardWith);
             Player = new Robot(map, MoveDir.RIGHT);
-            //Board.Init1();
         }
 
         public Game (Map map)
@@ -47,7 +46,6 @@ namespace Robot.Model
             Player.Drop(itemId);
         }
 
-        // get deep copy of the instance
         public Game Clone()
         {
             return new Game(this);

@@ -15,7 +15,6 @@ namespace Robot.Utility
             new HashSet<Parameter>();
 
 
-        //var asd = new EqualityComparer<Parameter>() ;
 
 
         public void AddCommand(CommandBase command)

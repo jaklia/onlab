@@ -89,7 +89,7 @@ namespace Robot.Visitors
             }
             catch (Exception)
             {
-                errorList.Add(new ErrorLogItem("Map height missing", "Custom", "Map", context.Start.Line, context.Start.Column));
+                errorList.Add(new ErrorLogItem($"Invalid value for map height: {context.GetText()}", "Custom", "Map", context.Start.Line, context.Start.Column));
             }
             return base.VisitHeight(context);
         }
@@ -110,7 +110,7 @@ namespace Robot.Visitors
             }
             catch (Exception)
             {
-                errorList.Add(new ErrorLogItem("Map width missing", "Custom", "Map", context.Start.Line, context.Start.Column));
+                errorList.Add(new ErrorLogItem($"Invalid value for map width: {context.GetText()}", "Custom", "Map", context.Start.Line, context.Start.Column));
             }
             return base.VisitWidth(context);
         }
@@ -178,11 +178,11 @@ namespace Robot.Visitors
                     errorList.Add(new ErrorLogItem("Key cannot be placed on a wall", "Custom", "Map", context.Start.Line, context.Start.Column));
                 } else if (map.GetField(row, col) == map.Finish)
                 {
-                    errorList.Add(new ErrorLogItem("Key cannot be at the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem("Key cannot be on the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
                 }
                 else if (map.GetField(row, col) == map.Start)
                 {
-                    errorList.Add(new ErrorLogItem("Key cannot be at the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem("Key cannot be on the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
                 }else
                 {
                     map.Key(row, col);
@@ -201,13 +201,13 @@ namespace Robot.Visitors
             {
                 if (map.GetField(row, col) == map.Start)
                 {
-                    errorList.Add(new ErrorLogItem("Wall cannot be at the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem("Wall cannot be on the start field", "Custom", "Map", context.Start.Line, context.Start.Column));
                 } else if (map.GetField(row, col) == map.Finish)
                 {
-                    errorList.Add(new ErrorLogItem("Wall cannot be at the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem("Wall cannot be on the finish field", "Custom", "Map", context.Start.Line, context.Start.Column));
                 } else if (map.GetField(row, col).HasItem())
                 {
-                    errorList.Add(new ErrorLogItem("Wall cannot be at a field that has an item", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem("Wall cannot be on a field that has an item", "Custom", "Map", context.Start.Line, context.Start.Column));
                 } else
                 {
                     map.SetWall(row, col);
@@ -236,7 +236,7 @@ namespace Robot.Visitors
                 }
                 catch (Exception)
                 {
-                    errorList.Add(new ErrorLogItem("Column value missing", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem($"Invalid value for column: {context.GetText()}", "Custom", "Map", context.Start.Line, context.Start.Column));
                 }
             }
             return base.VisitCol(context);
@@ -261,37 +261,11 @@ namespace Robot.Visitors
                 }
                 catch (Exception)
                 {
-                    errorList.Add(new ErrorLogItem("Row value missing", "Custom", "Map", context.Start.Line, context.Start.Column));
+                    errorList.Add(new ErrorLogItem($"Invalid value for row: {context.GetText()}", "Custom", "Map", context.Start.Line, context.Start.Column));
                 }
             }
             return base.VisitRow(context);
         }
 
-      
-
-        //public object Visit(IParseTree tree)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitChildren(IRuleNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitMapOptionRow([NotNull] MapEditorGrammarParser.MapOptionRowContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public object VisitTerminal(ITerminalNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        
-        //public object VisitWalls([NotNull] MapEditorGrammarParser.WallsContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

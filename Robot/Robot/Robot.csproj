@@ -70,7 +70,6 @@
     <Compile Include="Commands\FunctionCommand.cs" />
     <Compile Include="Commands\ICommandList.cs" />
     <Compile Include="Commands\LoopCommand.cs" />
-    <Compile Include="Commands\LoopManager.cs" />
     <Compile Include="Commands\MoveCommand.cs" />
     <Compile Include="Commands\PickUpCommand.cs" />
     <Compile Include="Commands\SimpleCommand.cs" />

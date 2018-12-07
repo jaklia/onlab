@@ -4,11 +4,10 @@ using System.Windows;
 
 namespace Robot.ViewModels
 {
-    public class MainViewModel //: INotifyCollectionChanged
+    public class MainViewModel 
     {
         public ObservableCollection<ErrorLogItem> errorList { get; } = new ObservableCollection<ErrorLogItem>();
 
-       // public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         public void asd(object sender, RoutedEventArgs e)
         {

@@ -17,15 +17,6 @@ namespace Robot.Visitors
             return base.VisitMap(context);
         }
 
-        //public override object VisitHeight([NotNull] MapEditorGrammarParser.HeightContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public override object VisitWidth([NotNull] MapEditorGrammarParser.WidthContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
 
         public override object VisitMapOptionRow([NotNull] MapEditorGrammarParser.MapOptionRowContext context)
         {
@@ -69,32 +60,7 @@ namespace Robot.Visitors
             return base.VisitKey(context);
         }
         
-        //public override object VisitRow([NotNull] MapEditorGrammarParser.RowContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public override object VisitCol([NotNull] MapEditorGrammarParser.ColContext context)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-
-
-
-
-        //public object VisitTerminal(ITerminalNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public object VisitErrorNode(IErrorNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        //public object VisitChildren(IRuleNode node)
-        //{
-        //    throw new NotImplementedException();
-        //}
+       
 
     }
 }
