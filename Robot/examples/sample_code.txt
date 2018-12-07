@@ -1,0 +1,79 @@
+loop 3
+  move 1
+  turn right
+  move 1
+  turn left
+end loop
+move 1
+pick up
+turn right
+move 6
+turn left
+move 5
+
+
+
+function a()
+  move 1
+  turn right
+  move 1
+  turn left
+end function
+function b()
+  call a()
+  call a()
+  call a()
+end function
+
+call b()
+move 1
+pick up
+turn right
+move 6
+turn left
+move 5
+
+
+
+loop 3
+  move 1
+  turn right
+  loop 2
+    turn right
+  end loop
+  loop 2
+    turn right
+  end loop
+  move 1
+  turn left
+end loop
+move 1
+pick up
+turn right
+move 6
+turn left
+move 5
+
+
+
+
+move 1
+turn right
+move 1
+turn left
+move 1
+turn right
+move 1
+turn left
+move 1
+turn right
+move 1
+turn left
+move 1
+pick up
+turn right
+move 6
+turn left
+move 5
+
+
