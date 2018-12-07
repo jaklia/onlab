@@ -3,14 +3,17 @@ grammar MapEditorGrammar;
 /*
  * Parser Rules
  */
+buildMap: map
+          options;
 
-map: MAPCMD height width
-		mapOptionRow*;
+map: MAPCMD height width;
+
+options: mapOptionRow*;
 
 mapOptionRow: walls |
-			  start |
-			  finish |
-			  key;
+              start |
+              finish |
+              key;
 
 walls: wall+;
 wall: WALLCMD row col;
@@ -27,8 +30,6 @@ row: INT;
 /*
  * Lexer Rules
  */
-
-
 
 MAPCMD: 'map';
 WALLCMD: 'wall';

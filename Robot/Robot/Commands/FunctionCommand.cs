@@ -6,9 +6,6 @@ namespace Robot.Commands
 {
     public class FunctionCommand : CommandBase, ICommandList
     {
-        //private List<CommandBase> commands;
-        //private Game gameRef;
-
         private CommandList cmdList;
 
         public event Action<CommandList> ListContextEntered;
@@ -19,8 +16,7 @@ namespace Robot.Commands
 
         public FunctionCommand(Game game, List<CommandBase> commands)
         {
-            //gameRef = game;
-            //this.commands = new List<CommandBase>(commands);
+
             cmdList = new CommandList(commands);
         }
 
@@ -38,14 +34,20 @@ namespace Robot.Commands
 
         public override void DoAll()
         {
-            ListContextEntered?.Invoke(cmdList);
+            if (Undone)
+            {
+                ListContextEntered?.Invoke(cmdList);
+            }
             cmdList.DoAll();
             ListContextExited?.Invoke(cmdList);
         }
         
         public override void UndoAll()
         {
-            ListContextEntered?.Invoke(cmdList);
+            if (Done)
+            {
+                ListContextEntered?.Invoke(cmdList);
+            }
             cmdList.UndoAll();
             ListContextExited?.Invoke(cmdList);
         }

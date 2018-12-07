@@ -1,59 +1,64 @@
 grammar RobotGrammar;
 
-program: functionDefinitions 
-        instructionSet;
-//prog: asd*;
 
-//asd: functionDef |
- //        instruction;
+program: progInstructionSet;
+
+progInstructionSet: progInstruction*;
+
+progInstruction: functionDef |
+                 instruction;
 
 
-functionDefinitions: functionDef*;
 instructionSet: instruction+;
 instruction: moveInstruction |
              turnInstruction |
-             loopWhileInstruction |
              loopInstruction |
              pickUpInstruction |
              dropInstruction |
              functionCall;
-
+// loops
 loopInstruction: LOOPCMD repeatCnt 
                      instructionSet 
                  LOOPENDCMD;
-loopWhileInstruction: LOOPWHILECMD BRACKET1 condition BRACKET2 
-                          instructionSet 
-                      LOOPENDCMD;
+
+// function definitions
+functionDef: FUNCTIONCMD functionName BRACKET1 parameterDefList? BRACKET2
+                  instructionSet
+             FUNCTIONENDCMD;
+parameterDefList: parameterDef (COMMA parameterDef)*;
+parameterDef: paramType parameterName;
+// function calls
+functionCall: CALLCMD functionName BRACKET1 parameterList? BRACKET2;
+parameterList: parameter (COMMA parameter)*;
+parameter: parameterName|intParameter|dirParameter;
+
+// simple instructions
 moveInstruction: MOVECMD moveAmount;
 turnInstruction: TURNCMD dir;
 pickUpInstruction: PICKUPCMD;
 dropInstruction: DROPCMD itemId;
 
-functionDef: FUNCTIONCMD functionName BRACKET1 parameterList? BRACKET2
-                  instructionSet
-             FUNCTIONENDCMD;
 
+functionName: ID;
+parameterName: ID;
+// prameter types for declaring a function
+paramType: TYPEINT|TYPEDIR;
+// parameters for calling a function
+dirParameter: dir;
+intParameter: INT;
 
-
-condition: (NOT? (FREECMD|WALLCMD));    //   A && B,  A || B  ???
-
-dir: leftDir|rightDir;
+dir: leftDir|rightDir|parameterName;
 leftDir: LEFT|MINUS;
 rightDir: RIGHT|PLUS;
-moveAmount: INT;
-repeatCnt: INT;
+moveAmount: INT|parameterName;
+repeatCnt: INT|parameterName;
 itemId: INT;
-functionName: ID;
 
-parameterList: parameter (COMMA parameter)*;
-
-functionCall: functionName BRACKET1 parameterList? BRACKET2;
-
-parameter: INT;
-parameterDef: PARAMTYPE ID;
+// Lexer rules
 
 FUNCTIONCMD: 'function';
 FUNCTIONENDCMD: 'end function';
+CALLCMD: 'call';
 LOOPENDCMD: 'end loop';
 LOOPWHILECMD: 'loop while';
 LOOPCMD: 'loop';
@@ -63,8 +68,8 @@ PICKUPCMD: 'pick up'|'pickup';
 DROPCMD: 'drop';
 FREECMD: 'free';
 WALLCMD: 'wall';
-
-PARAMTYPE: 'int';
+TYPEINT: 'int';
+TYPEDIR: 'dir';
 
 NOT: 'not'|'!';
 AND: 'and'|'&&';

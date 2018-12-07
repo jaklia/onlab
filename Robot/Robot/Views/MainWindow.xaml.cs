@@ -5,12 +5,13 @@ using Robot.Visitors;
 using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Collections.Generic;
-using Robot.Commands;
 using System.IO;
 using Microsoft.Win32;
+using Robot.ViewModels;
+using System.Collections.Generic;
+using Robot.Errors;
+using Robot.Commands;
 
 namespace Robot
 {
@@ -19,31 +20,27 @@ namespace Robot
     /// </summary>
     public partial class MainWindow : Window
     {
-        RobotGrammarParser.ProgramContext ctx;   /* ezeket külön osztályba (viewmodel????) !!!!! */
+        RobotGrammarParser.ProgramContext ctx;   
         Game game;
         Image RobotImg = new Image();
         Game startingState;
-        Commands.CommandManager cmdManager;  
-        // !!!  TODO:  add the commands in the visitor, and execute them in DoCmdBtn_Click
-        //           and UndoCmdBtn_Click
+        CommandManager cmdManager;  
 
         public MainWindow()
         {
             InitializeComponent();
-
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    GameBoardGrid.RowDefinitions.Add(new RowDefinition());
-            //    GameBoardGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //}
-
-         //   InitGame();
+            // disable all button before the map is loaded
+            ParseButton.IsEnabled = false;
+            StartButton.IsEnabled = false;
+            ResetButton.IsEnabled = false;
+            DoCmdBtn.IsEnabled = false;
+            UndoCmdBtn.IsEnabled = false;
+            DoAllBtn.IsEnabled = false;
+            UndoAllBtn.IsEnabled = false;
         }
        
-        void InitGame(string path)
+        void InitMap(Map map)
         {
-            Board map = GetMap(path);
-
             game = new Game(map);
 
             for (int i = 0; i < map.Height; i++)
@@ -57,9 +54,14 @@ namespace Robot
 
             //cmdManager = new Commands.CommandManager(); // eznemkellitt
         //    game.Board.Init2();
-            startingState = game.Clone();   // ez nem feltétlen kell ide, a ResetButton_Click-ből meg lehet hívni az InitGame()-t
+
+            // clone the starting state, so it could be reloaded
+            startingState = game.Clone();   
+
             DrawGame(game);
+            ParseButton.IsEnabled = true;
             StartButton.IsEnabled = false;
+            ResetButton.IsEnabled = false;
             DoCmdBtn.IsEnabled = false;
             UndoCmdBtn.IsEnabled = false;
             DoAllBtn.IsEnabled = false;
@@ -69,6 +71,8 @@ namespace Robot
 
         private void ParseButton_Click(object sender, RoutedEventArgs e)
         {
+            ((MainViewModel)DataContext).errorList.Clear();
+
             string code = textBox.Text;
             var inputStream = new AntlrInputStream(code);
             var lexer = new RobotGrammarLexer(inputStream);
@@ -76,26 +80,46 @@ namespace Robot
             var parser = new RobotGrammarParser(tokenStream);
             //parser.BuildParseTree = true;
             ctx = parser.program();
-            
+
+            // find declared function names and parameters
+            var functionDefVisitor = new FunctionDefVisitor();
+            functionDefVisitor.Visit(ctx);
+            if (functionDefVisitor.errorList.Count > 0) // errors found in function declarations
+            {
+                functionDefVisitor.errorList.ForEach(item => ((MainViewModel)DataContext).errorList.Add(item));
+                return;
+            }
+            var functionParams = functionDefVisitor.functionParameters;
+
+            // check errors
+            var errorVisitor = new RobotErrorVisitor(game.map, functionParams);
+            errorVisitor.Visit(ctx);
+
+            if (errorVisitor.errorList.Count > 0)
+            {
+                errorVisitor.errorList.ForEach(item => ((MainViewModel)DataContext).errorList.Add(item));
+                return;
+            }
+
+            game = startingState.Clone(); // reload the starting state
+            // functions
+            // TODO:  functionVisitor
+            cmdManager = new CommandManager(game, functionParams, ctx);
+
+            var declaredFunctions = cmdManager.declaredFunctions;
+
             // TreeView 
             treeView.Items.Clear();
-            TreeViewGeneratorVisitor treeViewGeneratorVisitor = new TreeViewGeneratorVisitor();
+            var treeViewGeneratorVisitor = new TreeViewGeneratorVisitor(declaredFunctions);
             treeViewGeneratorVisitor.ExpandAll = true;
             var tree = treeViewGeneratorVisitor.VisitProgram(ctx);
             tree.ExpandSubtree();
             treeView.Items.Add(tree);
-
-            game = startingState.Clone();
-
-            // build cmd list
-         //   List<CommandBase> commands = new List<CommandBase>();
-            //RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, cmdManager);
-         //   RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game, commands);
-         //   robotControllerVisitor.VisitProgram(ctx);
+            
             DrawGame(game);
-            cmdManager = new Commands.CommandManager(game, ctx);
-
+            
             StartButton.IsEnabled = true;
+            ResetButton.IsEnabled = true;
             DoCmdBtn.IsEnabled = true;
             UndoCmdBtn.IsEnabled = true;
             DoAllBtn.IsEnabled = true;
@@ -113,20 +137,7 @@ namespace Robot
             cmdManager.UndoProg();
             DrawGame(game);
         }
-
-        //void ResetGame()
-        //{
-        //    treeView.Items.Clear();
-        //    game = startingState.Clone();
-        //    cmdManager.Reset();
-        //    textBox.Text = "";
-        //    StartButton.IsEnabled = false;
-        //    DoCmdBtn.IsEnabled = false;
-        //    UndoCmdBtn.IsEnabled = false;
-        //    DrawGame(game);
-        //    //InitGame();
-        //}
-
+        
         private void DoCmdBtn_Click(object sender, RoutedEventArgs e)
         {
             cmdManager.DoCommand();
@@ -151,7 +162,6 @@ namespace Robot
             // enable only if we are in a loop / function
             cmdManager.DoAll();
             DrawGame(game);
-            
         }
         
         private void LoadMap_Click(object sender, RoutedEventArgs e)
@@ -159,67 +169,100 @@ namespace Robot
             OpenFileDialog filePicker = new OpenFileDialog();
             bool res = filePicker.ShowDialog() ?? false;
 
-            if (res)
+            if (res) 
             {
-                //MessageBox.Show(filePicker.FileName);
+                var ctx = getMapContext(filePicker.FileName);
+                var errorList = ValidateMap(ctx);
 
-                //Board map = GetMap(filePicker.FileName);
-                
-                // get map from visitor and pass it to initgame
-                InitGame(filePicker.FileName);
+                if (errorList.Count > 0)
+                {
+                    errorList.ForEach(item => ((MainViewModel)DataContext).errorList.Add(item));
+                }else
+                {
+                    var map = GetMap(ctx);
+                    InitMap(map);
+                }
             }
-
         }
 
-        Board GetMap (string path)
+        MapEditorGrammarParser.BuildMapContext getMapContext (string path)
         {
-            // readthe description from file
+            // read the description from file
             string map = File.ReadAllText(path);
             // parse
             var inputStream = new AntlrInputStream(map);
             var lexer = new MapEditorGrammarLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
             var parser = new MapEditorGrammarParser(tokenStream);
-            MapEditorGrammarParser.MapContext mapCtx = parser.map();
+            MapEditorGrammarParser.BuildMapContext ctx = parser.buildMap();
+            return ctx;
+        }
+
+        List<ErrorLogItem> ValidateMap(MapEditorGrammarParser.BuildMapContext ctx)
+        {
+            // check for errors
+            var mapErrorVisitor = new MapErrorVisitor();
+            mapErrorVisitor.Visit(ctx);
+            return mapErrorVisitor.errorList;
+        }
+        
+        Map GetMap (MapEditorGrammarParser.BuildMapContext ctx)
+        {
             // build the map in the visitor
             var mapBuilderVisitor = new MapBuilderVisitor();
-            mapBuilderVisitor.Visit(mapCtx);
+            mapBuilderVisitor.Visit(ctx);
             return mapBuilderVisitor.Map;
         }
+
+
+        //void ResetGame()
+        //{
+        //    treeView.Items.Clear();
+        //    game = startingState.Clone();
+        //    cmdManager.Reset();
+        //    textBox.Text = "";
+        //    StartButton.IsEnabled = false;
+        //    DoCmdBtn.IsEnabled = false;
+        //    UndoCmdBtn.IsEnabled = false;
+        //    DrawGame(game);
+        //    //InitGame();
+        //}
 
         void DrawGame(Game game)
         {
             GameBoardGrid.Children.Clear();
-            Image[,] imgs = new Image[game.Board.Height,game.Board.Width];
+            Image[,] imgs = new Image[game.map.Height,game.map.Width];
             // draw the board
-            for (int row=0; row<game.Board.Height; row++)
+            for (int row=0; row<game.map.Height; row++)
             {
-                for (int col=0; col<game.Board.Width; col++)
+                for (int col=0; col<game.map.Width; col++)
                 {
                     imgs[row, col] = new Image();
+                    Grid.SetColumn(imgs[row, col], col);
+                    Grid.SetRow(imgs[row, col], row);
                     imgs[row, col].MaxHeight = 40;
                     imgs[row, col].MaxWidth = 40;
                     imgs[row, col].Stretch = System.Windows.Media.Stretch.Uniform;
                     imgs[row, col].Margin = new Thickness(2, 2, 2, 2);
                     GameBoardGrid.Children.Add(imgs[row, col]);
-                    if (game.Board.GetField(row, col).HasItem())
+                    if (game.map.GetField(row, col).HasItem())
                     {
-                        Item item = game.Board.GetField(row, col).item;
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/Items/key.png", UriKind.Relative));
-                    } else if (game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()) {
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/wall.png", UriKind.Relative));
+                        Item item = game.map.GetField(row, col).item;
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/Items/key.png", UriKind.Relative));
+                    } else if (game.map.GetField(row, col) is Wall) {
+                        //  game.Board.GetField(row,col).GetType() == new Wall(0,0).GetType()
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/wall.png", UriKind.Relative));
                     }
                     else {
-                        imgs[row, col].Source = new BitmapImage(new Uri("Resources/emptyfield.png", UriKind.Relative));
-                    }
-                    Grid.SetColumn(imgs[row, col], col);
-                    Grid.SetRow(imgs[row, col], row);
-                    
+                        imgs[row, col].Source = new BitmapImage(new Uri("../Resources/emptyfield.png", UriKind.Relative));
+                    }                    
                 }
             }
-            // ehelyett a Board-ban GetDestField kell majd !!!
-            Field finish = game.Board.Finish;
-            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("Resources/destflag.png", UriKind.Relative));
+            Field finish = game.map.Finish;
+            imgs[finish.Row, finish.Column].Source = new BitmapImage(new Uri("../Resources/destflag.png", UriKind.Relative));
+            
+            // ez így nem jó,   btw miért csak úgy jó ha ki van írva a path??
+            //imgs[finish.Row, finish.Column] = (Image)Resources["destfield"];  
 
             // draw the player
             GameBoardGrid.Children.Add(RobotImg);
@@ -232,16 +275,16 @@ namespace Robot
             switch (game.Player.Dir)  /* ezt is külön (viewmodel?????) */
             {
                 case MoveDir.UP:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/up.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/up.png", UriKind.Relative));
                     break;
                 case MoveDir.RIGHT:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/right.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/right.png", UriKind.Relative));
                     break;
                 case MoveDir.DOWN:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/down.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/down.png", UriKind.Relative));
                     break;
                 case MoveDir.LEFT:
-                    RobotImg.Source = new BitmapImage(new Uri("Resources/Robot/left.png", UriKind.Relative));
+                    RobotImg.Source = new BitmapImage(new Uri("../Resources/Robot/left.png", UriKind.Relative));
                     break;
                 default:
                     break;

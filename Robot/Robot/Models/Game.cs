@@ -1,28 +1,27 @@
 ﻿
 namespace Robot.Model
 {
-    public class Game  // deep copy
+    public class Game 
     {
         public Robot Player;
-        public Board Board;
+        public Map map;
 
         public Game (int boardHeight, int boardWith)
         {
-            Board = new Board(boardHeight, boardWith);
-            Player = new Robot(Board, MoveDir.RIGHT);
-            //Board.Init1();
+            map = new Map(boardHeight, boardWith);
+            Player = new Robot(map, MoveDir.RIGHT);
         }
 
-        public Game (Board map)
+        public Game (Map map)
         {
-            Board = map;
-            Player = new Robot(Board, MoveDir.RIGHT);
+            this.map = map;
+            Player = new Robot(this.map, MoveDir.RIGHT);
         }
 
         public Game (Game other)
         {
-            Board = new Board(other.Board);
-            Player = new Robot(Board, other.Player);
+            map = new Map(other.map);
+            Player = new Robot(map, other.Player);
         }
 
         // return int instead of void
@@ -47,7 +46,6 @@ namespace Robot.Model
             Player.Drop(itemId);
         }
 
-        // get deep copy of the instance
         public Game Clone()
         {
             return new Game(this);
