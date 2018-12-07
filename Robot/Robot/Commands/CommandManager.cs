@@ -28,16 +28,21 @@ namespace Robot.Commands
             
             contextStack = new Stack<CommandList>();
 
-            var functionVisitor = new FunctionVisitor(game, functionParameters, 
-                (CommandList cmdList) =>
-                {
-                    contextStack.Push(cmdList);
-                },
-                (CommandList cmdList) => contextStack.Pop());
+            //var functionVisitor = new FunctionVisitor(game, functionParameters, 
+            //    (CommandList cmdList) =>
+            //    {
+            //        contextStack.Push(cmdList);
+            //    },
+            //    (CommandList cmdList) => contextStack.Pop());
+            // functionVisitor.VisitProgram(ctx);
+            // declaredFunctions = functionVisitor.declaredFunctions;
+
+            var functionVisitor = new FunctionVisitor();
             functionVisitor.VisitProgram(ctx);
-            declaredFunctions = functionVisitor.declaredFunctions;
+            var functions = functionVisitor.declaredFunctions;
+
             RobotControllerVisitor robotControllerVisitor = new RobotControllerVisitor(game,
-                declaredFunctions,
+                functions,
                 (CommandList cmdList) =>
                 {
                     contextStack.Push(cmdList);
@@ -50,6 +55,16 @@ namespace Robot.Commands
             contextStack.Push(progCmdList);
             doIndex = 0;
             undoIndex = -1;
+        }
+
+        public void onEnterCtx(CommandList cmdList)
+        {
+            contextStack.Push(cmdList);
+        }
+
+        public void onExitCtx(CommandList cmdList)
+        {
+            contextStack.Pop();
         }
 
       

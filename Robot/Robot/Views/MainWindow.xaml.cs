@@ -102,15 +102,18 @@ namespace Robot
             }
 
             game = startingState.Clone(); // reload the starting state
-            // functions
-            // TODO:  functionVisitor
+
+            //var functionVisitor = new FunctionVisitor();
+            //var functions = functionVisitor.declaredFunctions;
+
+
             cmdManager = new CommandManager(game, functionParams, ctx);
 
             var declaredFunctions = cmdManager.declaredFunctions;
 
             // TreeView 
             treeView.Items.Clear();
-            var treeViewGeneratorVisitor = new TreeViewGeneratorVisitor(declaredFunctions);
+            var treeViewGeneratorVisitor = new TreeViewGeneratorVisitor(/*declaredFunctions*/);
             treeViewGeneratorVisitor.ExpandAll = true;
             var tree = treeViewGeneratorVisitor.VisitProgram(ctx);
             tree.ExpandSubtree();

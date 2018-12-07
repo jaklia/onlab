@@ -10,18 +10,18 @@ namespace Robot.Visitors
     class RobotControllerVisitor : RobotGrammarBaseVisitor<object>
     {
         Game Game;
-        //CommandManager cmdManager;
-       // List<CommandBase> commands;
-        private Dictionary<string, List<CommandBase>> declaredFunctions;
+
+        //private Dictionary<string, List<CommandBase>> declaredFunctions;
+        public Dictionary<string, RobotGrammarParser.FunctionDefContext> declaredFunctions;
+
         private Action<CommandList> onEnterContext;
         private Action<CommandList> onExitContext;
         
         public RobotControllerVisitor(Game game, 
-            Dictionary<string, List<CommandBase>> declaredFunctions, 
+            Dictionary<string, RobotGrammarParser.FunctionDefContext> declaredFunctions, 
             Action<CommandList> onEnterContext, Action<CommandList> onExitContext)
         {
             Game = game;
-            //this.cmdManager = cmdManager;
             
             this.declaredFunctions = declaredFunctions;
             this.onEnterContext = onEnterContext;
@@ -87,13 +87,29 @@ namespace Robot.Visitors
         {
             
             string name = context.functionName().GetText();
-            FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
+
+            var asd = (List<CommandBase>)VisitFunctionDef(declaredFunctions[name]);
+
+          //  FunctionCommand functionCmd = new FunctionCommand(Game, declaredFunctions[name]);
+            FunctionCommand functionCmd = new FunctionCommand(Game, asd);
             ((ICommandList)functionCmd).ListContextEntered += onEnterContext;
             ((ICommandList)functionCmd).ListContextExited += onExitContext;
             return functionCmd;
         }
 
-      
+        public override object VisitFunctionDef([NotNull] RobotGrammarParser.FunctionDefContext context)
+        {
+            string name = context.functionName().GetText();
+            List<CommandBase> cmdList = new List<CommandBase>();
+          //  currentFunction = name;
+            cmdList = (List<CommandBase>)VisitInstructionSet(context.instructionSet());
+            //declaredFunctions[name] = cmdList;
+           // declaredFunctions[name].AddRange(cmdList);
+       //     currentFunction = "";
+            return cmdList;
+        }
+
+
         public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
         {
             int itemId = int.Parse(VisitItemId(context.itemId()).ToString());

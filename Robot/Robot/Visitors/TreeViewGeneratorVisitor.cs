@@ -11,9 +11,9 @@ namespace Robot.Visitors
         private Dictionary<string, List<CommandBase>> declaredFunctions;
         public bool ExpandAll { get; set; }
 
-        public TreeViewGeneratorVisitor(Dictionary<string, List<CommandBase>> declaredFunctions)
+        public TreeViewGeneratorVisitor(/*Dictionary<string, List<CommandBase>> declaredFunctions*/)
         {
-            this.declaredFunctions = declaredFunctions;
+           // this.declaredFunctions = declaredFunctions;
         }
 
         public override TreeViewItem VisitProgram([NotNull] RobotGrammarParser.ProgramContext context)
