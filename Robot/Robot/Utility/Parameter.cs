@@ -12,16 +12,13 @@ namespace Robot.Utility
 
         public string Type { get; private set; }
 
-
-
+        
         public Parameter(string name, string type)
         {
             Name = name;
             Type = type;
         }
         
-       
-
         public bool Equals(Parameter other)
         {
             return Name == other.Name;

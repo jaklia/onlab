@@ -16,6 +16,10 @@ namespace Robot.Visitors
 
         private Action<CommandList> onEnterContext;
         private Action<CommandList> onExitContext;
+
+        private Stack<Dictionary<string, RobotGrammarParser.ParameterContext>> parameters =
+            new Stack<Dictionary<string, RobotGrammarParser.ParameterContext>>();
+        private RobotGrammarParser.ParameterListContext currentParamListCtx;
         
         public RobotControllerVisitor(Game game, 
             Dictionary<string, RobotGrammarParser.FunctionDefContext> declaredFunctions, 
@@ -70,7 +74,18 @@ namespace Robot.Visitors
 
         public override object VisitLoopInstruction([NotNull] RobotGrammarParser.LoopInstructionContext context)
         {
-            int cnt = int.Parse(VisitRepeatCnt(context.repeatCnt()).ToString());
+            int cnt; //  = int.Parse(VisitRepeatCnt(context.repeatCnt()).ToString());
+
+            if (context.repeatCnt().parameterName() != null)
+            {
+                string name = context.repeatCnt().parameterName().GetText();
+                cnt = int.Parse(parameters.Peek()[name].intParameter().GetText());
+            }
+            else
+            {
+                cnt = int.Parse(context.repeatCnt().INT().GetText());
+            }
+
             List<CommandBase> cmdList = new List<CommandBase>();
             foreach (var instruction in context.instructionSet().instruction())
             {
@@ -81,12 +96,12 @@ namespace Robot.Visitors
             ((ICommandList)loopCmd).ListContextExited += onExitContext;
             return loopCmd;
         }
-
-
+        
         public override object VisitFunctionCall([NotNull] RobotGrammarParser.FunctionCallContext context)
         {
             
             string name = context.functionName().GetText();
+            currentParamListCtx = context.parameterList() ?? null;
 
             var asd = (List<CommandBase>)VisitFunctionDef(declaredFunctions[name]);
 
@@ -101,14 +116,41 @@ namespace Robot.Visitors
         {
             string name = context.functionName().GetText();
             List<CommandBase> cmdList = new List<CommandBase>();
-          //  currentFunction = name;
+            //  currentFunction = name;
+
+            Dictionary<string, RobotGrammarParser.ParameterContext> currentParamList =
+                new Dictionary<string, RobotGrammarParser.ParameterContext>();
+
+            if (currentParamListCtx != null)
+            {
+                int i = 0;
+                foreach (var parameter in currentParamListCtx.parameter())
+                {
+                    //var asd = 
+                    var ctx = context.parameterDefList().parameterDef()[i];   // .GetChild(i);
+                    string paramName = ctx.parameterName().GetText();
+                    if (parameter.dirParameter() != null || parameter.intParameter() != null)
+                    {
+                        currentParamList[paramName] = parameter;
+                    }
+                    else if (parameter.parameterName() != null)
+                    {
+                        currentParamList[paramName] = parameters.Peek()[parameter.parameterName().GetText()];
+                    }
+                    i++;
+                }
+            }
+            parameters.Push(currentParamList);
+
             cmdList = (List<CommandBase>)VisitInstructionSet(context.instructionSet());
+
+            parameters.Pop();
+
             //declaredFunctions[name] = cmdList;
            // declaredFunctions[name].AddRange(cmdList);
        //     currentFunction = "";
             return cmdList;
         }
-
 
         public override object VisitDropInstruction([NotNull] RobotGrammarParser.DropInstructionContext context)
         {
@@ -122,7 +164,17 @@ namespace Robot.Visitors
 
         public override object VisitMoveInstruction([NotNull] RobotGrammarParser.MoveInstructionContext context)
         {
-            int amount = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
+            int amount;   //   = int.Parse(VisitMoveAmount(context.moveAmount()).ToString());
+
+            if (context.moveAmount().parameterName() != null)
+            {
+                string name = context.moveAmount().parameterName().GetText();
+                amount = int.Parse(parameters.Peek()[name].intParameter().GetText());
+            } else
+            {
+                amount = int.Parse(context.moveAmount().INT().GetText());
+            }
+
             MoveCommand moveCmd = new MoveCommand(Game, amount);
 
             //cmdManager.AddCommand(new MoveCommand(Game, amount));
@@ -141,7 +193,24 @@ namespace Robot.Visitors
 
         public override object VisitTurnInstruction([NotNull] RobotGrammarParser.TurnInstructionContext context)
         {
-            TurnDir dir = (TurnDir)VisitDir(context.dir());
+            TurnDir dir; //   = (TurnDir)VisitDir(context.dir());
+
+            if (context.dir().parameterName() != null)
+            {
+                string name = context.dir().parameterName().GetText();
+                string tmp = parameters.Peek()[name].dirParameter().GetText();
+                if (tmp == "+" || tmp == "right")
+                {
+                    dir = TurnDir.RIGHT;
+                } else
+                {
+                    dir = TurnDir.LEFT;
+                }
+            } else
+            {
+                dir = (TurnDir)VisitDir(context.dir());
+            }
+
             TurnCommand turnCmd = new TurnCommand(Game, dir);
 
             //cmdManager.AddCommand(new TurnCommand(Game, dir));
@@ -186,10 +255,7 @@ namespace Robot.Visitors
             return context.GetText();
         }
 
-        //public override object VisitCondition([NotNull] RobotGrammarParser.ConditionContext context)
-        //{
-        //    return base.VisitCondition(context);
-        //}
+        
 
     }
 }
